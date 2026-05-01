@@ -5,5 +5,16 @@ dist
 .env
 .env.*
 !.env.example
+
+*.log
+npm-debug.log*
+
+coverage
+*.tsbuildinfo
+
 playwright-report
 test-results
+blob-report
+.playwright
+
+.vite
