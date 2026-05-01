@@ -1,0 +1,116 @@
+{
+  "header": {
+    "name": "סטודיו פלואו",
+    "subtitle": "מחובר",
+    "avatar": "avatar.jpeg",
+    "avatarColor": "#5DCAA5",
+    "unreadCount": 3
+  },
+  "direction": "rtl",
+  "showControls": true,
+  "bot": {
+    "name": "פילי",
+    "businessName": "סטודיו פלואו"
+  },
+  "messages": [
+    {
+      "id": "1",
+      "sender": "incoming",
+      "text": "היי! ראיתי את הסטודיו באינסטגרם, יש שיעור ניסיון?",
+      "timestamp": "21:42",
+      "delayBeforeMs": 600
+    },
+    {
+      "id": "2",
+      "sender": "outgoing",
+      "text": "היי, אני פילי, הבוט של סטודיו פלואו 🤖\nכיף שפנית 😊",
+      "timestamp": "21:42",
+      "status": "read",
+      "delayBeforeMs": 1400
+    },
+    {
+      "id": "3",
+      "sender": "outgoing",
+      "text": "כן! שיעור ניסיון ראשון 50 ש״ח (במקום 90).\nמה הרמה שלך - מתחילה, ביניים או מנוסה?",
+      "timestamp": "21:42",
+      "status": "read",
+      "delayBeforeMs": 800
+    },
+    {
+      "id": "4",
+      "sender": "incoming",
+      "text": "די מתחילה, עשיתי כמה שיעורים לפני שנתיים",
+      "timestamp": "21:43",
+      "delayBeforeMs": 2200
+    },
+    {
+      "id": "5",
+      "sender": "outgoing",
+      "text": "אז Beginner Reformer יתאים בול 🎯\nיש לי השבוע שני סלוטים פנויים לניסיון:\n\n• שלישי 09:00\n• חמישי 17:30\n\nמה עובד יותר?",
+      "timestamp": "21:43",
+      "status": "read",
+      "delayBeforeMs": 1800
+    },
+    {
+      "id": "6",
+      "sender": "incoming",
+      "text": "חמישי 17:30 מצוין",
+      "timestamp": "21:44",
+      "delayBeforeMs": 2000
+    },
+    {
+      "id": "7",
+      "sender": "outgoing",
+      "text": "שריינתי לך ✨\nאשמח לקבל שם מלא ומספר טלפון לסיום ההרשמה",
+      "timestamp": "21:44",
+      "status": "read",
+      "delayBeforeMs": 1100
+    },
+    {
+      "id": "8",
+      "sender": "incoming",
+      "text": "שירה לוי, 052-1234567",
+      "timestamp": "21:45",
+      "delayBeforeMs": 2400
+    },
+    {
+      "id": "9",
+      "sender": "outgoing",
+      "text": "סגור שירה 🎉\n\n📅 חמישי, 7.11, 17:30\n📍 רוטשילד 22, ת״א (קומה 2)\n💰 50 ש״ח (תשלום בסטודיו)\n\nכמה דברים קטנים:\n• להגיע 10 דק׳ לפני\n• בגדים נוחים + גרביים נון-סליפ (אצלנו ב-25 ש״ח)",
+      "timestamp": "21:45",
+      "status": "read",
+      "delayBeforeMs": 1500
+    },
+    {
+      "id": "10",
+      "sender": "incoming",
+      "text": "אגב יש חבילות אחרי הניסיון?",
+      "timestamp": "21:46",
+      "delayBeforeMs": 2800
+    },
+    {
+      "id": "11",
+      "sender": "outgoing",
+      "text": "כן, 3 אופציות:\n\n• 5 שיעורים — 450 ש״ח (90 לשיעור)\n• 10 שיעורים — 850 ש״ח (85 לשיעור)\n• חודשי ללא הגבלה — 1,200 ש״ח\n\nהחודשי משתלם החל מ-3 שיעורים בשבוע. אבל קודם בואי נראה איך הניסיון 😉",
+      "timestamp": "21:46",
+      "status": "read",
+      "delayBeforeMs": 1800
+    },
+    {
+      "id": "12",
+      "sender": "incoming",
+      "text": "מושלם, תודה רבה! 🙏",
+      "timestamp": "21:47",
+      "delayBeforeMs": 2000,
+      "reactions": ["❤️"]
+    },
+    {
+      "id": "13",
+      "sender": "outgoing",
+      "text": "רואים אותך חמישי 💪\nאם תרצי לבטל או להזיז - פשוט תכתבי לי כאן",
+      "timestamp": "21:47",
+      "status": "read",
+      "delayBeforeMs": 1500
+    }
+  ]
+}
