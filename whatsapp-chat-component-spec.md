@@ -63,10 +63,11 @@ type WhatsAppChatProps = {
   messages: Message[];
   direction?: 'ltr' | 'rtl';                  // default 'ltr'
   showStatusBar?: boolean;                    // default true
-  statusBarTime?: string;                     // default "15:27"
+  statusBarTime?: string;                     // default "15:27"; align with message timestamps (see Scenarios)
   showInputBar?: boolean;                     // default true (the bottom + / text / camera / mic bar)
   autoplay?: boolean;                         // default false (shows Play button)
   showControls?: boolean;                     // default true; set false during recording so Play/Reset don't appear
+  syncStatusBarFromMessages?: boolean;        // default true; status bar clock follows visible message timestamps (idle = first message)
 };
 ```
 
@@ -84,6 +85,11 @@ type WhatsAppChatProps = {
    - Auto-scroll to bottom smoothly
    - If `reactions` present, animate them in ~300ms after the message lands (small pop-in)
 3. After all messages: keep state. Reset button restarts from empty.
+
+### Status bar clock
+
+- With **`syncStatusBarFromMessages`** `true` (default): before Play, the clock matches **`messages[0].timestamp`** when the list is non-empty; each newly visible message updates the clock to that message’s **`timestamp`**. After Reset, idle state matches the first message again.
+- With **`syncStatusBarFromMessages`** `false`: the clock stays **`statusBarTime`** for the whole scene.
 
 ### Typing indicator
 
@@ -170,12 +176,59 @@ The component is complete when:
 
 ---
 
+## Scenarios
+
+### Scenario: Status bar time matches the conversation
+
+For screen recordings to read as a believable WhatsApp thread, the **iPhone status bar clock** should reflect the **same fictional time** as the timestamps on the message bubbles. Viewers subconsciously compare the top-of-screen time with `timestamp` inside each bubble; mismatches break immersion.
+
+**Authoring rule:** Set `statusBarTime` to a time that aligns with your scripted messages—for example the hour/minute of the **last message** you care about in the clip, or the time carried by **most bubbles** if the whole scene is one minute. If every message uses the same `timestamp` (e.g. `23:14`), use that value for `statusBarTime`. If the conversation spans several minutes, pick the time that matches the **dominant or final** segment you are filming, or update `statusBarTime` between takes if you re-mount the component per segment.
+
+The component exposes **`statusBarTime`** for a fixed clock when **`syncStatusBarFromMessages`** is `false`. When **`syncStatusBarFromMessages`** is `true` (default), the status bar shows the **`timestamp` of the last visible message**; before playback it shows the **first message’s `timestamp`** (or `statusBarTime` if there are no messages). Set **`syncStatusBarFromMessages`** to `false` if you want the clock frozen at **`statusBarTime`** for the whole recording.
+
+---
+
+### Example scenario — what each value means
+
+The **Example Usage** block below is one full scenario (RTL Hebrew cleaning-agency demo). This table explains every value you pass so you can reuse the same shape for other businesses or languages.
+
+| Location | Value | Meaning |
+|----------|--------|--------|
+| **Root** | `direction` | `'rtl'` mirrors the layout for Hebrew/Arabic; use `'ltr'` for English and left-to-right scripts. |
+| **Root** | `showControls` | `false` hides Play/Reset so they never appear in the recording frame; use `true` while editing the script. |
+| **Root** | `statusBarTime` | Clock on the fake status bar (e.g. `"23:16"`). Should match the fictional time of the bubbles; in this example the last message is `23:16`, so the phone clock uses `23:16`. |
+| **Root** | `header` | Object describing the chat partner (name, subtitle, avatar)—the top bar under the status strip. |
+| **header** | `name` | Primary label next to the avatar (business or contact name). |
+| **header** | `subtitle` | Secondary line (e.g. online status); omit to fall back to the default subtitle copy from the API. |
+| **header** | `avatarUrl` | Image URL for the circular avatar; optional placeholder if omitted. |
+| **Root** | `messages` | Ordered script of bubbles played back sequentially when the user presses Play. |
+| **Each message** | `id` | Stable unique string for React keys and debugging; any ID scheme is fine. |
+| **Each message** | `sender` | `'incoming'` = white bubble (them); `'outgoing'` = green bubble (you). |
+| **Each message** | `text` | Body copy shown inside the bubble; supports emoji and RTL/LTR according to `direction` and content. |
+| **Each message** | `timestamp` | Time label inside the bubble (e.g. `"23:14"`). **Align mentally with `statusBarTime`** so the phone clock and bubbles tell one story (see scenario above). |
+| **Each message** | `delayBeforeMs` | Milliseconds to wait *before* this message’s typing/reveal sequence starts; overrides the default pause between messages. |
+| **Each message** | `status` | Outgoing only: `'sent'` \| `'delivered'` \| `'read'` controls grey vs blue double-check marks. |
+| **Each message** | `replyTo` | Optional quoted reply: nested `senderName`, optional `senderColor` for the vertical bar, and `text` preview. |
+| **Each message** | `reactions` | Optional array of emoji strings rendered as reaction chips on the bubble. |
+| **Each message** | `typingDurationMs` | Optional override for how long the incoming typing dots animate before the bubble appears. |
+
+**Root props not shown in the example but available:**
+
+| Prop | Meaning |
+|------|--------|
+| `showStatusBar` | Toggle the fake iPhone status bar (signal, battery, clock); default `true`. |
+| `showInputBar` | Bottom bar (+ / field / mic icons); default `true`. |
+| `autoplay` | If `true`, start playback without pressing Play; default `false`. |
+
+---
+
 ## Example Usage
 
 ```jsx
 <WhatsAppChat
   direction="rtl"
   showControls={false}
+  statusBarTime="23:16"
   header={{
     name: "ניקיון פלוס",
     subtitle: "מקוון",

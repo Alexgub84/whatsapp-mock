@@ -31,6 +31,7 @@ export type ScenarioFile = {
   showInputBar?: boolean;
   autoplay?: boolean;
   showControls?: boolean;
+  syncStatusBarFromMessages?: boolean;
 };
 
 export type LoadedScenario = ScenarioFile & {

@@ -3,15 +3,15 @@
     "name": "סטודיו פלואו",
     "subtitle": "מחובר",
     "avatar": "avatar.jpeg",
-    "avatarColor": "#5DCAA5",
     "unreadCount": 3
   },
   "direction": "rtl",
+  "statusBarTime": "21:44",
+  "syncStatusBarFromMessages": true,
+  "showStatusBar": true,
+  "showInputBar": true,
   "showControls": true,
-  "bot": {
-    "name": "פילי",
-    "businessName": "סטודיו פלואו"
-  },
+  "autoplay": false,
   "messages": [
     {
       "id": "1",

@@ -1,4 +1,10 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useMemo,
+} from "react";
 import { ChevronLeft, Phone, Plus, Camera, Mic } from "lucide-react";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -33,6 +39,8 @@ type WhatsAppChatProps = {
   showInputBar?: boolean;
   autoplay?: boolean;
   showControls?: boolean;
+  /** When true, status bar clock follows message timestamps (idle = first message). When false, uses statusBarTime only. */
+  syncStatusBarFromMessages?: boolean;
 };
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -267,14 +275,14 @@ function ChatHeader({
       dir="ltr"
       className={`flex flex-row items-center shrink-0 ${HEADER_ACTION_PAIR_GAP_CLASS}`}
     >
-      <HeaderVideoCallIcon />
       <Phone size={HEADER_ACTION_ICON_SIZE} color="#000000" />
+      <HeaderVideoCallIcon />
     </div>
   );
 
   return (
     <header
-      className="flex flex-row items-center justify-between gap-2 px-2 py-2 bg-white border-b border-[#E5E5E5]"
+      className="flex flex-row items-center justify-between gap-2 px-2 py-2 bg-[#F6F6F6] border-b border-[#E5E5E5]"
       style={{ minHeight: 56 }}
       dir="ltr"
     >
@@ -341,7 +349,7 @@ function MessageBubble({
   // In LTR: incoming = left, outgoing = right
   const alignRight = rtl ? !isOut : isOut;
 
-  const bubbleBg = isOut ? "#D9FDD3" : "#FFFFFF";
+  const bubbleBg = isOut ? "#DCF8C6" : "#FFFFFF";
 
   // Tail: the tail corner is on the bottom-outside of the bubble
   const tailStyle = alignRight
@@ -522,6 +530,7 @@ export default function WhatsAppChat({
   showInputBar = true,
   autoplay = false,
   showControls = true,
+  syncStatusBarFromMessages = true,
 }: WhatsAppChatProps) {
   const rtl = direction === "rtl";
 
@@ -534,6 +543,20 @@ export default function WhatsAppChat({
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const cancelRef = useRef(false);
+
+  const displayedStatusTime = useMemo(() => {
+    if (!syncStatusBarFromMessages) return statusBarTime;
+    const visible = messages.filter((m) => visibleIds.has(m.id));
+    if (visible.length === 0) {
+      return messages.length > 0 ? messages[0].timestamp : statusBarTime;
+    }
+    return visible[visible.length - 1].timestamp;
+  }, [
+    syncStatusBarFromMessages,
+    statusBarTime,
+    messages,
+    visibleIds,
+  ]);
 
   const scrollToBottom = useCallback(() => {
     if (scrollRef.current) {
@@ -645,7 +668,7 @@ export default function WhatsAppChat({
           style={{ width: 126, height: 34, borderRadius: "0 0 20px 20px" }}
         />
 
-        {showStatusBar && <StatusBar time={statusBarTime} />}
+        {showStatusBar && <StatusBar time={displayedStatusTime} />}
 
         <ChatHeader
           avatarUrl={header.avatarUrl}
@@ -663,7 +686,7 @@ export default function WhatsAppChat({
           style={{
             backgroundImage: DOODLE_URI,
             backgroundSize: "200px 200px",
-            backgroundColor: "#E5DDD5",
+            backgroundColor: "#EFE7DD",
           }}
         >
           {messages.map((msg) =>

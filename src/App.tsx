@@ -48,6 +48,7 @@ export default function App() {
       showInputBar={data.showInputBar}
       autoplay={data.autoplay}
       showControls={data.showControls}
+      syncStatusBarFromMessages={data.syncStatusBarFromMessages}
     />
   );
 }
