@@ -38,6 +38,29 @@ export type LoadedScenario = ScenarioFile & {
   header: ScenarioFile["header"] & { avatarUrl?: string };
 };
 
+export async function loadScenarioRouteIds(
+  signal?: AbortSignal
+): Promise<string[]> {
+  const res = await fetch("/scenarios/registry.json", { signal });
+  if (!res.ok) {
+    throw new Error(`Scenario registry missing (HTTP ${res.status})`);
+  }
+  const data: unknown = await res.json();
+  if (
+    data &&
+    typeof data === "object" &&
+    "routes" in data &&
+    Array.isArray((data as { routes: unknown }).routes) &&
+    (data as { routes: unknown[] }).routes.every((x) => typeof x === "string")
+  ) {
+    return (data as { routes: string[] }).routes;
+  }
+  if (Array.isArray(data) && data.every((x) => typeof x === "string")) {
+    return data;
+  }
+  throw new Error("Invalid scenario registry shape");
+}
+
 export async function loadScenario(
   id: string,
   signal?: AbortSignal

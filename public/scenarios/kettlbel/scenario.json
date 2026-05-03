@@ -1,0 +1,85 @@
+{
+  "header": {
+    "name": "סטודיו אדרנלין",
+    "subtitle": "מחובר",
+    "avatar": "avatar.png",
+    "unreadCount": 2
+  },
+  "direction": "rtl",
+  "statusBarTime": "21:15",
+  "syncStatusBarFromMessages": true,
+  "showStatusBar": true,
+  "showInputBar": true,
+  "showControls": true,
+  "autoplay": false,
+  "messages": [
+    {
+      "id": "1",
+      "sender": "incoming",
+      "text": "היי! יש מקום באימון מחר ב-07:00?",
+      "timestamp": "21:15",
+      "delayBeforeMs": 600
+    },
+    {
+      "id": "2",
+      "sender": "outgoing",
+      "text": "היי! אני אדרי, הבוט של סטודיו אדרנלין.\nשמח שפנית!",
+      "timestamp": "21:15",
+      "status": "read",
+      "delayBeforeMs": 1200
+    },
+    {
+      "id": "3",
+      "sender": "outgoing",
+      "text": "האימון מחר ב-07:00 מלא כרגע (8/8 משתתפים).\nרוצה שאכניס אותך לרשימת המתנה?",
+      "timestamp": "21:15",
+      "status": "read",
+      "delayBeforeMs": 900
+    },
+    {
+      "id": "4",
+      "sender": "incoming",
+      "text": "כן בבקשה, ממש מחפש משהו בבוקר",
+      "timestamp": "21:16",
+      "delayBeforeMs": 2200
+    },
+    {
+      "id": "5",
+      "sender": "outgoing",
+      "text": "הוספתי אותך לרשימה ✅\nאם מישהו מבטל — תקבל הודעה מיידית.",
+      "timestamp": "21:16",
+      "status": "read",
+      "delayBeforeMs": 1100
+    },
+    {
+      "id": "6",
+      "sender": "incoming",
+      "text": "תודה",
+      "timestamp": "21:16",
+      "delayBeforeMs": 1800
+    },
+    {
+      "id": "7",
+      "sender": "outgoing",
+      "text": "בשורות טובות — נפתח מקום באימון מחר 07:00.\n\nהמקום שמור לך עד 23:30, אחרי זה עובר לבא בתור.\nמגיע?",
+      "timestamp": "23:14",
+      "status": "read",
+      "delayBeforeMs": 3000
+    },
+    {
+      "id": "8",
+      "sender": "incoming",
+      "text": "בטח, מגיע!",
+      "timestamp": "23:15",
+      "delayBeforeMs": 2000
+    },
+    {
+      "id": "9",
+      "sender": "outgoing",
+      "text": "מעולה, רשום אותך ✅\n\n📅 מחר, 07:00\n📍 הרברט סמואל 15, ת״א\n\nלהגיע 5 דק׳ לפני. נתראה!",
+      "timestamp": "23:15",
+      "status": "read",
+      "delayBeforeMs": 1200
+    }
+  ]
+}

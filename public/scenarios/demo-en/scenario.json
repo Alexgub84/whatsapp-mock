@@ -1,0 +1,36 @@
+{
+  "header": {
+    "name": "Coffee Shop",
+    "subtitle": "online"
+  },
+  "direction": "ltr",
+  "statusBarTime": "09:41",
+  "showStatusBar": true,
+  "showInputBar": true,
+  "showControls": true,
+  "autoplay": false,
+  "messages": [
+    {
+      "id": "1",
+      "sender": "incoming",
+      "text": "Hi — are you open tomorrow morning?",
+      "timestamp": "09:38",
+      "delayBeforeMs": 600
+    },
+    {
+      "id": "2",
+      "sender": "outgoing",
+      "text": "Hey! Yes, we’re open 7–3. Want a reservation?",
+      "timestamp": "09:39",
+      "status": "read",
+      "delayBeforeMs": 1200
+    },
+    {
+      "id": "3",
+      "sender": "incoming",
+      "text": "Perfect, 10am for 2 please",
+      "timestamp": "09:40",
+      "delayBeforeMs": 900
+    }
+  ]
+}

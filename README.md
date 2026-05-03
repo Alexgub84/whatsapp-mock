@@ -27,11 +27,23 @@ npm install
 
 Conversation content is loaded from JSON under **`public/scenarios/<id>/scenario.json`**.
 
-- **Default scenario:** `public/scenarios/default/scenario.json` is used when no other source is set.
-- **Query string:** `http://localhost:5173/?scenario=default` loads `public/scenarios/default/scenario.json`. Replace `default` with another folder name when you add scenarios.
-- **Build-time default:** Set `VITE_SCENARIO=myScenario` so the app defaults to that id when the URL has no `scenario` parameter.
+Add a scenario by creating a folder: `public/scenarios/<your-id>/scenario.json`. Optional assets (for example avatars) sit in that same folder; `header.avatar` is resolved relative to **`/scenarios/<id>/`**.
 
-The loader resolves `header.avatar` to **`/scenarios/<id>/<filename>`** (for example `avatar.jpeg` next to `scenario.json`). See [`src/scenario.ts`](src/scenario.ts) for the JSON shape and types.
+The top bar reads folder ids from **`public/scenarios/registry.json`** (`routes` array). When you add a new scenario folder, append its id there so a button appears.
+
+Included examples:
+
+- **`default`** — Hebrew / RTL Pilates studio flow (uses `avatar.jpeg` beside `scenario.json` if present).
+- **`demo-en`** — Short English / LTR sample with no avatar.
+- **`kettlbel`** — Hebrew / RTL Adrenaline studio flow (uses `avatar.png` beside `scenario.json` if present).
+
+**How to pick which scenario loads**
+
+1. **Query string (highest priority):** `http://localhost:5173/?scenario=demo-en` loads `public/scenarios/demo-en/scenario.json`.
+2. **Env default:** If the URL has no `scenario`, the app uses `VITE_SCENARIO`, then falls back to `default`. Copy [`.env.example`](.env.example) to `.env` or `.env.local` and set `VITE_SCENARIO=<your-id>`.
+3. **Production build:** `VITE_SCENARIO` is baked in at build time (`npm run build`). For runtime switching without rebuilding, rely on **`?scenario=...`** instead.
+
+See [`src/scenario.ts`](src/scenario.ts) for the JSON shape and types.
 
 ## Embedding the component
 
