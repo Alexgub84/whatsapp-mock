@@ -1,6 +1,6 @@
 {
   "name": "@alexgub84/whatsapp-chat-mock",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "type": "module",
   "description": "A WhatsApp-style animated chat UI component for React",
   "main": "./dist/index.js",

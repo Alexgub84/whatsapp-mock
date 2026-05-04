@@ -1,7 +1,5 @@
-import "./styles.css";
-
-export { default as WhatsAppChat } from "./WhatsAppChat";
-export type { WhatsAppChatProps, Message } from "./WhatsAppChat";
+export { default as WhatsAppChat, WhatsAppDemo } from "./WhatsAppChat";
+export type { WhatsAppChatProps, WhatsAppDemoProps, Message } from "./WhatsAppChat";
 export type {
   ScenarioFile,
   ScenarioMessage,

@@ -40,18 +40,82 @@ export default function Page() {
 }
 ```
 
+## Sizing & scaling
+
+The phone frame is always rendered at its native **390 × 844 px** resolution. Use the `scale` prop to resize it proportionally without any cropping or distortion.
+
+The outer container automatically adjusts to `390 × scale` by `844 × scale`, so the component never bleeds outside its layout box — no manual width/height wrappers needed.
+
+```tsx
+// 80% of full size
+<WhatsAppChat scale={0.8} header={...} messages={messages} />
+
+// 60% — good for sidebars or narrow columns
+<WhatsAppChat scale={0.6} header={...} messages={messages} />
+
+// Full size (default)
+<WhatsAppChat header={...} messages={messages} />
+```
+
+**Astro example**
+
+```astro
+---
+import { WhatsAppChat } from "@alexgub84/whatsapp-chat-mock";
+import "@alexgub84/whatsapp-chat-mock/styles.css";
+import messages from "../data/messages.json";
+---
+
+<WhatsAppChat
+  client:load
+  scale={0.75}
+  header={{ name: "Sarah", subtitle: "online" }}
+  messages={messages}
+  autoplay={true}
+  showControls={false}
+/>
+```
+
+> **`showControls={false}`** hides the Play/Reset buttons — recommended when embedding in a page where you want `autoplay` to run silently on scroll or mount.
+
+## Demo wrapper
+
+If you want the full-page grey demo look (e.g. a dedicated preview page), wrap the component with `WhatsAppDemo`:
+
+```tsx
+import { WhatsAppChat, WhatsAppDemo } from "@alexgub84/whatsapp-chat-mock";
+import "@alexgub84/whatsapp-chat-mock/styles.css";
+
+export default function PreviewPage() {
+  return (
+    <WhatsAppDemo>
+      <WhatsAppChat
+        scale={0.9}
+        header={{ name: "Jane" }}
+        messages={messages}
+        showControls={true}
+        autoplay={false}
+      />
+    </WhatsAppDemo>
+  );
+}
+```
+
+`WhatsAppDemo` provides a centered, grey-background full-screen layout. It has no effect on the phone frame itself.
+
 ## Props
 
 | Prop | Type | Default | Description |
 | ---- | ---- | ------- | ----------- |
 | `header` | `{ name, avatarUrl?, subtitle?, unreadCount? }` | required | Contact info shown in the chat header |
 | `messages` | `Message[]` | required | Array of messages to animate |
+| `scale` | `number` | `1` | Scale factor for the phone frame (e.g. `0.8` = 80%). Container auto-sizes to match. |
 | `direction` | `"ltr" \| "rtl"` | `"ltr"` | Text/layout direction |
 | `showStatusBar` | `boolean` | `true` | Show iPhone-style status bar |
 | `statusBarTime` | `string` | `"15:27"` | Fixed time shown in status bar |
 | `showInputBar` | `boolean` | `true` | Show the bottom input bar |
 | `autoplay` | `boolean` | `false` | Auto-start message playback on mount |
-| `showControls` | `boolean` | `true` | Show Play/Reset buttons outside the frame |
+| `showControls` | `boolean` | `true` | Show Play/Reset buttons above the frame |
 | `syncStatusBarFromMessages` | `boolean` | `true` | Sync status bar clock with message timestamps |
 | `className` | `string` | — | Additional CSS class for the outer wrapper |
 

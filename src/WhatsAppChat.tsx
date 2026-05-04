@@ -4,7 +4,9 @@ import {
   useRef,
   useCallback,
   useMemo,
+  type ReactNode,
 } from "react";
+import "./styles.css";
 import { ChevronLeft, Phone, Plus, Camera, Mic } from "lucide-react";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -41,6 +43,13 @@ export type WhatsAppChatProps = {
   showControls?: boolean;
   /** When true, status bar clock follows message timestamps (idle = first message). When false, uses statusBarTime only. */
   syncStatusBarFromMessages?: boolean;
+  /**
+   * Scale factor applied to the phone frame via CSS transform.
+   * 1 = full size (390×844 px), 0.8 = 80%, etc.
+   * The outer container automatically shrinks to match so the component
+   * never bleeds outside its natural layout box.
+   */
+  scale?: number;
   className?: string;
 };
 
@@ -409,18 +418,14 @@ function MessageBubble({
             </div>
           )}
 
-          {/* Message text + timestamp row */}
-          <div className="flex items-end gap-2 flex-wrap">
-            <span
-              className="text-[16px] leading-[1.3] text-black break-words"
-              dir={rtl ? "rtl" : "ltr"}
-            >
-              {message.text}
-            </span>
-            <span className="flex items-center gap-[2px] ml-auto mt-[2px] flex-shrink-0">
-              <span className="text-[11px] text-[#667781] whitespace-nowrap">
-                {message.timestamp}
-              </span>
+          {/* Message text + timestamp: inline flow so meta stays tight after text when wrapped */}
+          <div
+            className="text-[16px] leading-[1.3] text-black break-words"
+            dir={rtl ? "rtl" : "ltr"}
+          >
+            {message.text}
+            <span className="inline-flex items-center gap-[2px] align-bottom whitespace-nowrap text-[11px] text-[#667781] ps-1">
+              {message.timestamp}
               {isOut && <ReadReceipt status={message.status} />}
             </span>
           </div>
@@ -522,6 +527,9 @@ function InputBar({ rtl }: { rtl: boolean }) {
 
 // ─── Main component ───────────────────────────────────────────────────────────
 
+const PHONE_W = 390;
+const PHONE_H = 844;
+
 export default function WhatsAppChat({
   header,
   messages,
@@ -532,6 +540,7 @@ export default function WhatsAppChat({
   autoplay = false,
   showControls = true,
   syncStatusBarFromMessages = true,
+  scale = 1,
   className,
 }: WhatsAppChatProps) {
   const rtl = direction === "rtl";
@@ -626,10 +635,13 @@ export default function WhatsAppChat({
   }, [visibleIds, showTyping, scrollToBottom]);
 
   return (
-    <div className={`flex flex-col items-center justify-center min-h-screen bg-gray-200 py-4 overflow-y-auto${className ? ` ${className}` : ""}`}>
-      {/* Controls — outside the phone frame */}
+    <div
+      className={`inline-flex flex-col items-center${className ? ` ${className}` : ""}`}
+      style={{ background: "transparent" }}
+    >
+      {/* Controls — rendered above the phone frame when enabled */}
       {showControls && (
-        <div className="flex gap-3 mb-8">
+        <div className="flex gap-3 mb-4">
           {!isPlaying && !done && (
             <button
               data-testid="play-button"
@@ -651,71 +663,114 @@ export default function WhatsAppChat({
         </div>
       )}
 
-      {/* Phone frame */}
+      {/*
+        Outer box shrinks to the scaled dimensions so the component never
+        bleeds outside its layout box. The inner phone frame is then scaled
+        from the top-left corner to fill that box exactly.
+      */}
       <div
-        data-testid="phone-frame"
-        className="relative flex flex-col overflow-hidden bg-white"
         style={{
-          width: 390,
-          height: 844,
-          borderRadius: 44,
-          boxShadow:
-            "0 0 0 10px #1a1a1a, 0 0 0 12px #3a3a3a, 0 30px 60px rgba(0,0,0,0.4)",
+          width: PHONE_W * scale,
+          height: PHONE_H * scale,
+          flexShrink: 0,
+          position: "relative",
         }}
-        dir="ltr"
       >
-        {/* Notch */}
+        {/* Phone frame */}
         <div
-          className="absolute top-0 left-1/2 -translate-x-1/2 z-10 bg-[#1a1a1a]"
-          style={{ width: 126, height: 34, borderRadius: "0 0 20px 20px" }}
-        />
-
-        {showStatusBar && <StatusBar time={displayedStatusTime} />}
-
-        <ChatHeader
-          avatarUrl={header.avatarUrl}
-          name={header.name}
-          subtitle={header.subtitle ?? "tap here to add to contacts"}
-          unreadCount={header.unreadCount}
-          rtl={rtl}
-        />
-
-        {/* Message area */}
-        <div
-          ref={scrollRef}
-          dir="ltr"
-          className="flex-1 overflow-y-auto py-2"
+          data-testid="phone-frame"
+          className="relative flex flex-col overflow-hidden bg-white"
           style={{
-            backgroundImage: DOODLE_URI,
-            backgroundSize: "200px 200px",
-            backgroundColor: "#EFE7DD",
+            width: PHONE_W,
+            height: PHONE_H,
+            borderRadius: 44,
+            boxShadow:
+              "0 0 0 10px #1a1a1a, 0 0 0 12px #3a3a3a, 0 30px 60px rgba(0,0,0,0.4)",
+            transform: scale !== 1 ? `scale(${scale})` : undefined,
+            transformOrigin: "top left",
+            position: "absolute",
+            top: 0,
+            left: 0,
           }}
+          dir="ltr"
         >
-          {messages.map((msg) =>
-            visibleIds.has(msg.id) ? (
-              <MessageBubble
-                key={msg.id}
-                message={msg}
-                rtl={rtl}
-                visible={revealedIds.has(msg.id)}
-                showReaction={reactionIds.has(msg.id)}
-              />
-            ) : null,
-          )}
+          {/* Notch */}
+          <div
+            className="absolute top-0 left-1/2 -translate-x-1/2 z-10 bg-[#1a1a1a]"
+            style={{ width: 126, height: 34, borderRadius: "0 0 20px 20px" }}
+          />
 
-          {showTyping && <TypingIndicator rtl={rtl} />}
+          {showStatusBar && <StatusBar time={displayedStatusTime} />}
 
-          {/* Bottom padding so last message isn't clipped by reaction bubbles */}
-          <div className="h-5" />
-        </div>
+          <ChatHeader
+            avatarUrl={header.avatarUrl}
+            name={header.name}
+            subtitle={header.subtitle ?? "tap here to add to contacts"}
+            unreadCount={header.unreadCount}
+            rtl={rtl}
+          />
 
-        {showInputBar && <InputBar rtl={rtl} />}
+          {/* Message area */}
+          <div
+            ref={scrollRef}
+            dir="ltr"
+            className="flex-1 min-h-0 min-w-0 overflow-x-hidden overflow-y-auto py-2 scrollbar-hidden"
+            style={{
+              backgroundImage: DOODLE_URI,
+              backgroundSize: "200px 200px",
+              backgroundColor: "#EFE7DD",
+            }}
+          >
+            {messages.map((msg) =>
+              visibleIds.has(msg.id) ? (
+                <MessageBubble
+                  key={msg.id}
+                  message={msg}
+                  rtl={rtl}
+                  visible={revealedIds.has(msg.id)}
+                  showReaction={reactionIds.has(msg.id)}
+                />
+              ) : null,
+            )}
 
-        {/* iPhone home indicator */}
-        <div className="flex justify-center items-center pb-2 pt-1 bg-white">
-          <div className="w-32 h-[5px] bg-black rounded-full opacity-20" />
+            {showTyping && <TypingIndicator rtl={rtl} />}
+
+            {/* Bottom padding so last message isn't clipped by reaction bubbles */}
+            <div className="h-5" />
+          </div>
+
+          {showInputBar && <InputBar rtl={rtl} />}
+
+          {/* iPhone home indicator */}
+          <div className="flex justify-center items-center pb-2 pt-1 bg-white">
+            <div className="w-32 h-[5px] bg-black rounded-full opacity-20" />
+          </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+// ─── Demo wrapper ─────────────────────────────────────────────────────────────
+
+export type WhatsAppDemoProps = {
+  children: ReactNode;
+  className?: string;
+};
+
+/**
+ * Optional layout wrapper that replicates the original full-page demo look:
+ * gray background, centered content, vertical scroll.
+ *
+ * Use this in a dev/preview page. For embedding inside a real site, use
+ * <WhatsAppChat> directly (no background, no forced page layout).
+ */
+export function WhatsAppDemo({ children, className }: WhatsAppDemoProps) {
+  return (
+    <div
+      className={`flex flex-col items-center justify-center min-h-screen bg-gray-200 py-8 overflow-x-hidden overflow-y-auto scrollbar-hidden${className ? ` ${className}` : ""}`}
+    >
+      {children}
     </div>
   );
 }

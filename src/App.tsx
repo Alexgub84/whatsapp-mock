@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import WhatsAppChat from "./WhatsAppChat";
+import WhatsAppChat, { WhatsAppDemo } from "./WhatsAppChat";
 import {
   loadScenario,
   loadScenarioRouteIds,
@@ -112,9 +112,9 @@ export default function App() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-gray-200">
+    <>
       {nav}
-      <div className="flex flex-1 flex-col">
+      <WhatsAppDemo>
         <WhatsAppChat
           header={data.header}
           messages={data.messages}
@@ -126,7 +126,7 @@ export default function App() {
           showControls={data.showControls}
           syncStatusBarFromMessages={data.syncStatusBarFromMessages}
         />
-      </div>
-    </div>
+      </WhatsAppDemo>
+    </>
   );
 }
