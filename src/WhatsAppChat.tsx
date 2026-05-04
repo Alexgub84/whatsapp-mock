@@ -9,7 +9,7 @@ import { ChevronLeft, Phone, Plus, Camera, Mic } from "lucide-react";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-type Message = {
+export type Message = {
   id: string;
   sender: "incoming" | "outgoing";
   text: string;
@@ -25,7 +25,7 @@ type Message = {
   delayBeforeMs?: number;
 };
 
-type WhatsAppChatProps = {
+export type WhatsAppChatProps = {
   header: {
     avatarUrl?: string;
     name: string;
@@ -41,6 +41,7 @@ type WhatsAppChatProps = {
   showControls?: boolean;
   /** When true, status bar clock follows message timestamps (idle = first message). When false, uses statusBarTime only. */
   syncStatusBarFromMessages?: boolean;
+  className?: string;
 };
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -531,6 +532,7 @@ export default function WhatsAppChat({
   autoplay = false,
   showControls = true,
   syncStatusBarFromMessages = true,
+  className,
 }: WhatsAppChatProps) {
   const rtl = direction === "rtl";
 
@@ -624,7 +626,7 @@ export default function WhatsAppChat({
   }, [visibleIds, showTyping, scrollToBottom]);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-200 py-4 overflow-y-auto">
+    <div className={`flex flex-col items-center justify-center min-h-screen bg-gray-200 py-4 overflow-y-auto${className ? ` ${className}` : ""}`}>
       {/* Controls — outside the phone frame */}
       {showControls && (
         <div className="flex gap-3 mb-8">

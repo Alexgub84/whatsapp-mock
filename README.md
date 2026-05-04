@@ -1,27 +1,110 @@
-# WhatsApp mock
+# @alexgub84/whatsapp-chat-mock
 
-A small **Vite + React + TypeScript** app that renders an **iPhone-style WhatsApp chat** for scripted playback: typing indicators, message animations, scroll behavior, and read receipts. It is meant for **screen-recorded demos** (for example QuickTime) rather than real messaging.
+An **iPhone-style WhatsApp chat UI** component for React with scripted playback: typing indicators, message animations, scroll behavior, and read receipts. Designed for **screen-recorded demos** and **marketing mockups**.
 
-The main UI lives in [`src/WhatsAppChat.tsx`](src/WhatsAppChat.tsx). Behavior and props are documented in detail in [`whatsapp-chat-component-spec.md`](whatsapp-chat-component-spec.md).
+The main UI lives in [`src/WhatsAppChat.tsx`](src/WhatsAppChat.tsx). Full behavior and props are documented in [`whatsapp-chat-component-spec.md`](whatsapp-chat-component-spec.md).
 
-## Requirements
+## Installation
+
+This package is published to GitHub Packages. Add an `.npmrc` to your project:
+
+```
+@alexgub84:registry=https://npm.pkg.github.com
+```
+
+Then install:
+
+```bash
+npm install @alexgub84/whatsapp-chat-mock
+```
+
+## Usage
+
+```tsx
+import { WhatsAppChat } from "@alexgub84/whatsapp-chat-mock";
+import "@alexgub84/whatsapp-chat-mock/styles.css";
+
+const messages = [
+  { id: "1", sender: "incoming", text: "Hey, is the class still on?", timestamp: "10:30" },
+  { id: "2", sender: "outgoing", text: "Yes! See you at 6pm", timestamp: "10:31", status: "read" },
+];
+
+export default function Page() {
+  return (
+    <WhatsAppChat
+      header={{ name: "Jane", avatarUrl: "/avatar.png", subtitle: "online" }}
+      messages={messages}
+      autoplay={true}
+    />
+  );
+}
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+| ---- | ---- | ------- | ----------- |
+| `header` | `{ name, avatarUrl?, subtitle?, unreadCount? }` | required | Contact info shown in the chat header |
+| `messages` | `Message[]` | required | Array of messages to animate |
+| `direction` | `"ltr" \| "rtl"` | `"ltr"` | Text/layout direction |
+| `showStatusBar` | `boolean` | `true` | Show iPhone-style status bar |
+| `statusBarTime` | `string` | `"15:27"` | Fixed time shown in status bar |
+| `showInputBar` | `boolean` | `true` | Show the bottom input bar |
+| `autoplay` | `boolean` | `false` | Auto-start message playback on mount |
+| `showControls` | `boolean` | `true` | Show Play/Reset buttons outside the frame |
+| `syncStatusBarFromMessages` | `boolean` | `true` | Sync status bar clock with message timestamps |
+| `className` | `string` | — | Additional CSS class for the outer wrapper |
+
+### Message shape
+
+```ts
+type Message = {
+  id: string;
+  sender: "incoming" | "outgoing";
+  text: string;
+  timestamp: string;
+  status?: "sent" | "delivered" | "read";
+  replyTo?: { senderName: string; senderColor?: string; text: string };
+  reactions?: string[];
+  typingDurationMs?: number;
+  delayBeforeMs?: number;
+};
+```
+
+## Publishing (maintainer)
+
+```bash
+# Build the library
+npm run build:lib
+
+# Authenticate with GitHub Packages (once)
+npm login --registry=https://npm.pkg.github.com
+
+# Publish
+npm publish
+```
+
+## Local Development
+
+### Requirements
 
 - Node.js 18+ (or current LTS)
 
-## Setup
+### Setup
 
 ```bash
 npm install
 ```
 
-## Scripts
+### Scripts
 
-| Command        | Description                                      |
-| -------------- | ------------------------------------------------ |
-| `npm run dev`  | Dev server (default: http://localhost:5173)      |
-| `npm run build`| Typecheck and production build to `dist/`        |
-| `npm run preview` | Serve the production build locally            |
-| `npm run test:e2e` | Playwright tests (starts dev server if needed) |
+| Command | Description |
+| ------- | ----------- |
+| `npm run dev` | Dev server (default: http://localhost:5173) |
+| `npm run build` | Typecheck and production build (demo app) |
+| `npm run build:lib` | Build the publishable library to `dist/` |
+| `npm run preview` | Serve the production build locally |
+| `npm run test:e2e` | Playwright tests |
 
 ## Scenarios
 

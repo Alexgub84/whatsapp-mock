@@ -1,18 +1,34 @@
 {
-  "name": "whatsapp-mock",
-  "private": true,
-  "version": "0.0.0",
+  "name": "@alexgub84/whatsapp-chat-mock",
+  "version": "1.0.0",
   "type": "module",
+  "description": "A WhatsApp-style animated chat UI component for React",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./styles.css": "./dist/styles.css"
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:lib": "vite build --config vite.lib.config.ts",
     "preview": "vite preview",
     "test:e2e": "playwright test"
   },
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0"
+  },
   "dependencies": {
-    "lucide-react": "0.469.0",
-    "react": "18.3.1",
-    "react-dom": "18.3.1"
+    "lucide-react": "0.469.0"
   },
   "devDependencies": {
     "@playwright/test": "1.49.1",
@@ -20,8 +36,27 @@
     "@types/react": "18.3.18",
     "@types/react-dom": "18.3.5",
     "@vitejs/plugin-react": "4.3.4",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
     "tailwindcss": "^4.2.4",
     "typescript": "5.7.2",
-    "vite": "6.0.5"
-  }
+    "vite": "6.0.5",
+    "vite-plugin-dts": "^4.5.4"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alexguberman/whstapp-mock.git"
+  },
+  "keywords": [
+    "whatsapp",
+    "chat",
+    "react",
+    "component",
+    "mock",
+    "ui"
+  ],
+  "license": "MIT"
 }
