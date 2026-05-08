@@ -1,0 +1,46 @@
+{
+  "description": "Image messages: put image files beside scenario.json under public/scenarios/image-test/. In each message, set optional \"image\": { \"url\": \"filename.png\" }. Use a relative \"url\" (e.g. test-image.png) for assets in this folder—they load as /scenarios/image-test/<url>. Absolute URLs starting with http(s):// or / pass through unchanged. Optional \"caption\" shows under the image; \"text\" adds a line below the caption. Omit \"caption\" when you only need body text plus the image.",
+  "header": {
+    "name": "Image Test",
+    "subtitle": "online"
+  },
+  "direction": "ltr",
+  "statusBarTime": "10:00",
+  "showStatusBar": true,
+  "showInputBar": true,
+  "showControls": true,
+  "autoplay": false,
+  "syncStatusBarFromMessages": true,
+  "messages": [
+    {
+      "id": "1",
+      "sender": "incoming",
+      "text": "Can you send a photo?",
+      "timestamp": "10:00",
+      "delayBeforeMs": 200
+    },
+    {
+      "id": "2",
+      "sender": "outgoing",
+      "text": "",
+      "timestamp": "10:01",
+      "status": "read",
+      "delayBeforeMs": 200,
+      "image": {
+        "url": "test-image.png",
+        "caption": "Studio floor"
+      }
+    },
+    {
+      "id": "3",
+      "sender": "outgoing",
+      "text": "Does this help?",
+      "timestamp": "10:02",
+      "status": "read",
+      "delayBeforeMs": 200,
+      "image": {
+        "url": "test-image.png"
+      }
+    }
+  ]
+}

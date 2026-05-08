@@ -1,6 +1,13 @@
 export type MessageStatus = "sent" | "delivered" | "read";
 export type Direction = "ltr" | "rtl";
 
+export type ScenarioMessageImage = {
+  url: string;
+  width?: number;
+  height?: number;
+  caption?: string;
+};
+
 export type ScenarioMessage = {
   id: string;
   sender: "incoming" | "outgoing";
@@ -15,14 +22,16 @@ export type ScenarioMessage = {
   reactions?: string[];
   typingDurationMs?: number;
   delayBeforeMs?: number;
+  image?: ScenarioMessageImage;
 };
 
 export type ScenarioFile = {
+  description?: string;
   header: {
     name: string;
     subtitle?: string;
     unreadCount?: number;
-    avatar?: string;
+    profile_image?: string;
   };
   messages: ScenarioMessage[];
   direction?: Direction;
@@ -35,8 +44,16 @@ export type ScenarioFile = {
 };
 
 export type LoadedScenario = ScenarioFile & {
-  header: ScenarioFile["header"] & { avatarUrl?: string };
+  header: ScenarioFile["header"] & { profileImageUrl?: string };
 };
+
+function resolveScenarioAssetUrl(scenarioId: string, url: string): string {
+  const trimmed = url.trim();
+  if (!trimmed) return url;
+  if (/^https?:\/\//i.test(trimmed) || trimmed.startsWith("/"))
+    return trimmed;
+  return `/scenarios/${scenarioId}/${trimmed}`;
+}
 
 export async function loadScenarioRouteIds(
   signal?: AbortSignal
@@ -70,11 +87,23 @@ export async function loadScenario(
     throw new Error(`Scenario "${id}" not found (HTTP ${res.status})`);
   }
   const data: ScenarioFile = await res.json();
-  const avatarUrl = data.header.avatar
-    ? `/scenarios/${id}/${data.header.avatar}`
+  const profileImageUrl = data.header.profile_image
+    ? resolveScenarioAssetUrl(id, data.header.profile_image)
     : undefined;
+  const messages = data.messages.map((m) =>
+    m.image?.url
+      ? {
+          ...m,
+          image: {
+            ...m.image,
+            url: resolveScenarioAssetUrl(id, m.image.url),
+          },
+        }
+      : m,
+  );
   return {
     ...data,
-    header: { ...data.header, avatarUrl },
+    header: { ...data.header, profileImageUrl },
+    messages,
   };
 }

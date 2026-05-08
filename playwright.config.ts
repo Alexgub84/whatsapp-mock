@@ -5,7 +5,7 @@ export default defineConfig({
   timeout: 30_000,
   expect: { timeout: 20_000 },
   use: {
-    baseURL: "http://localhost:5173",
+    baseURL: "http://localhost:4173",
     trace: "on-first-retry",
   },
   projects: [
@@ -15,9 +15,9 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: "npm run dev",
-    url: "http://localhost:5173",
-    reuseExistingServer: true,
-    timeout: 30_000,
+    command: "npm run build && vite preview --host 127.0.0.1 --port 4173 --strictPort",
+    url: "http://localhost:4173",
+    reuseExistingServer: false,
+    timeout: 120_000,
   },
 });

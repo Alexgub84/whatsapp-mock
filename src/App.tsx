@@ -6,22 +6,6 @@ import {
   type LoadedScenario,
 } from "./scenario";
 
-function getScenarioId(): string {
-  return (
-    new URLSearchParams(window.location.search).get("scenario") ??
-    import.meta.env.VITE_SCENARIO ??
-    "default"
-  );
-}
-
-function scenarioHref(id: string): string {
-  const path = window.location.pathname;
-  const params = new URLSearchParams(window.location.search);
-  params.set("scenario", id);
-  const qs = params.toString();
-  return `${path}${qs ? `?${qs}` : ""}`;
-}
-
 function routeButtonLabel(id: string): string {
   return id
     .split("-")
@@ -30,7 +14,9 @@ function routeButtonLabel(id: string): string {
 }
 
 export default function App() {
-  const scenarioId = getScenarioId();
+  const [scenarioId, setScenarioId] = useState(
+    () => import.meta.env.VITE_SCENARIO ?? "default",
+  );
   const [routes, setRoutes] = useState<string[]>([]);
   const [data, setData] = useState<LoadedScenario | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -60,27 +46,28 @@ export default function App() {
   const nav =
     routes.length > 0 ? (
       <nav
-        className="flex flex-wrap items-center gap-2 border-b border-gray-200 bg-white px-4 py-3 shadow-sm"
+        className="flex flex-wrap items-center gap-3 border-b border-gray-200 bg-white px-4 py-3 shadow-sm"
         aria-label="Scenarios"
       >
-        {routes.map((id) => {
-          const active = id === scenarioId;
-          return (
-            <a
-              key={id}
-              href={scenarioHref(id)}
-              aria-current={active ? "page" : undefined}
-              className={[
-                "rounded-lg border px-3 py-1.5 text-sm font-medium transition-colors",
-                active
-                  ? "border-emerald-600 bg-emerald-600 text-white"
-                  : "border-gray-200 bg-gray-50 text-gray-800 hover:bg-gray-100",
-              ].join(" ")}
-            >
+        <label
+          htmlFor="scenario-select"
+          className="text-sm font-medium text-gray-700"
+        >
+          Scenario
+        </label>
+        <select
+          id="scenario-select"
+          data-testid="scenario-select"
+          value={scenarioId}
+          onChange={(e) => setScenarioId(e.target.value)}
+          className="min-w-40 rounded-lg border border-gray-200 bg-gray-50 px-3 py-1.5 text-sm font-medium text-gray-800 transition-colors hover:bg-gray-100 focus:border-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-600/30"
+        >
+          {routes.map((id) => (
+            <option key={id} value={id}>
               {routeButtonLabel(id)}
-            </a>
-          );
-        })}
+            </option>
+          ))}
+        </select>
       </nav>
     ) : null;
 

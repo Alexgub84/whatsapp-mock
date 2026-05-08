@@ -49,13 +49,19 @@ type Message = {
     text: string;                             // quoted preview
   };
   reactions?: string[];                       // e.g. ['❤️', '👍']
-  typingDurationMs?: number;                  // override; default ~1500ms scaled to text length
+  typingDurationMs?: number;                  // override; default ~1500ms scaled to text length (+ image caption length for incoming)
   delayBeforeMs?: number;                     // pause before this message appears; default 800ms
+  image?: {
+    url: string;                              // resolved relative to scenario folder when authoring JSON (/scenarios/<id>/), or absolute / http(s)
+    width?: number;                           // forwarded to <img> when set
+    height?: number;
+    caption?: string;                         // line under the image (before message text when both exist)
+  };
 };
 
 type WhatsAppChatProps = {
   header: {
-    avatarUrl?: string;                       // defaults to placeholder
+    profileImageUrl?: string;                 // defaults to placeholder
     name: string;
     subtitle?: string;                        // default "tap here to add to contacts"
     unreadCount?: number;                     // shows next to back arrow
@@ -80,7 +86,7 @@ type WhatsAppChatProps = {
 1. **Initial state:** header + empty doodle background visible. If `showControls` is true, a floating Play button appears (positioned outside the phone frame, not inside the chat — so it can be cropped from recordings).
 2. **On Play**, iterate `messages` in order:
    - Wait `delayBeforeMs` (default 800ms)
-   - If `sender === 'incoming'`: show typing indicator (3 animated dots in a white bubble at the appropriate side) for `typingDurationMs` (default ~1500ms, scale by text length: ~30ms per character, capped 800–3000ms)
+   - If `sender === 'incoming'`: show typing indicator (3 animated dots in a white bubble at the appropriate side) for `typingDurationMs` (default ~1500ms, scale by combined length of `text` and optional `image.caption`: ~30ms per character, capped 800–3000ms)
    - Reveal the message bubble with a subtle scale + fade animation (~200ms)
    - Auto-scroll to bottom smoothly
    - If `reactions` present, animate them in ~300ms after the message lands (small pop-in)
@@ -167,7 +173,7 @@ The component is complete when:
 
 ## Out of Scope (v1)
 
-- Image / video / voice / document messages
+- Video / voice / document messages (image-only photo bubbles are supported via `image.url`)
 - Group chats with multiple senders
 - Real WhatsApp API integration
 - Keyboard rendering
@@ -197,10 +203,10 @@ The **Example Usage** block below is one full scenario (RTL Hebrew cleaning-agen
 | **Root** | `direction` | `'rtl'` mirrors the layout for Hebrew/Arabic; use `'ltr'` for English and left-to-right scripts. |
 | **Root** | `showControls` | `false` hides Play/Reset so they never appear in the recording frame; use `true` while editing the script. |
 | **Root** | `statusBarTime` | Clock on the fake status bar (e.g. `"23:16"`). Should match the fictional time of the bubbles; in this example the last message is `23:16`, so the phone clock uses `23:16`. |
-| **Root** | `header` | Object describing the chat partner (name, subtitle, avatar)—the top bar under the status strip. |
-| **header** | `name` | Primary label next to the avatar (business or contact name). |
+| **Root** | `header` | Object describing the chat partner (name, subtitle, profile photo)—the top bar under the status strip. |
+| **header** | `name` | Primary label next to the profile photo (business or contact name). |
 | **header** | `subtitle` | Secondary line (e.g. online status); omit to fall back to the default subtitle copy from the API. |
-| **header** | `avatarUrl` | Image URL for the circular avatar; optional placeholder if omitted. |
+| **header** | `profileImageUrl` | Image URL for the circular profile image; optional placeholder if omitted. |
 | **Root** | `messages` | Ordered script of bubbles played back sequentially when the user presses Play. |
 | **Each message** | `id` | Stable unique string for React keys and debugging; any ID scheme is fine. |
 | **Each message** | `sender` | `'incoming'` = white bubble (them); `'outgoing'` = green bubble (you). |
@@ -210,12 +216,14 @@ The **Example Usage** block below is one full scenario (RTL Hebrew cleaning-agen
 | **Each message** | `status` | Outgoing only: `'sent'` \| `'delivered'` \| `'read'` controls grey vs blue double-check marks. |
 | **Each message** | `replyTo` | Optional quoted reply: nested `senderName`, optional `senderColor` for the vertical bar, and `text` preview. |
 | **Each message** | `reactions` | Optional array of emoji strings rendered as reaction chips on the bubble. |
+| **Each message** | `image` | Optional photo bubble (`url`, optional `caption`, optional `width`/`height`). In JSON scenarios, relative `url` files live beside `scenario.json` and resolve under `/scenarios/<id>/`. |
 | **Each message** | `typingDurationMs` | Optional override for how long the incoming typing dots animate before the bubble appears. |
 
 **Root props not shown in the example but available:**
 
 | Prop | Meaning |
 |------|--------|
+| `description` | Optional string for authoring notes in JSON scenarios; ignored at runtime by the renderer. |
 | `showStatusBar` | Toggle the fake iPhone status bar (signal, battery, clock); default `true`. |
 | `showInputBar` | Bottom bar (+ / field / mic icons); default `true`. |
 | `autoplay` | If `true`, start playback without pressing Play; default `false`. |
@@ -232,7 +240,7 @@ The **Example Usage** block below is one full scenario (RTL Hebrew cleaning-agen
   header={{
     name: "ניקיון פלוס",
     subtitle: "מקוון",
-    avatarUrl: "/cleaning-logo.png"
+    profileImageUrl: "/cleaning-logo.png"
   }}
   messages={[
     {

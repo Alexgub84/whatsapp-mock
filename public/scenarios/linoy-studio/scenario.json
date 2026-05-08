@@ -1,0 +1,127 @@
+{
+  "header": {
+    "name": "סטודיו ג'ל של לינוי",
+    "subtitle": "מחובר",
+    "profile_image": "profile_image.png",
+    "unreadCount": 2
+  },
+  "direction": "rtl",
+  "statusBarTime": "22:04",
+  "syncStatusBarFromMessages": true,
+  "showStatusBar": true,
+  "showInputBar": true,
+  "showControls": true,
+  "autoplay": false,
+  "messages": [
+    {
+      "id": "1",
+      "sender": "incoming",
+      "text": "היי! ראיתי אותך באינסטגרם 🙏",
+      "timestamp": "22:04",
+      "delayBeforeMs": 600
+    },
+    {
+      "id": "2",
+      "sender": "incoming",
+      "text": "המניקוריסטית הקבועה שלי לא זמינה ויש לי אירוע מחר בערב 😩 יש סיכוי לתור דחוף מחר בבוקר?",
+      "timestamp": "22:04",
+      "delayBeforeMs": 1400
+    },
+    {
+      "id": "3",
+      "sender": "outgoing",
+      "text": "היי! אני ג'לי, העוזרת הדיגיטלית של הסטודיו של לינוי 💅\nברור שנמצא פתרון, אל דאגה 🙌",
+      "timestamp": "22:04",
+      "status": "read",
+      "delayBeforeMs": 1100
+    },
+    {
+      "id": "4",
+      "sender": "outgoing",
+      "text": "רק שאדע מה לסדר - את צריכה לק ג'ל, מילוי או בנייה? ועד איזו שעה את חייבת להיות מוכנה?",
+      "timestamp": "22:05",
+      "status": "read",
+      "delayBeforeMs": 900
+    },
+    {
+      "id": "5",
+      "sender": "incoming",
+      "text": "לק ג'ל. כמה שיותר מוקדם, חייבת להיות מוכנה עד 16:00",
+      "timestamp": "22:05",
+      "delayBeforeMs": 1500
+    },
+    {
+      "id": "6",
+      "sender": "outgoing",
+      "text": "מצוין, אספיק לך בנוחות 🙏\nהנה הזמנים הפנויים מחר בבוקר ללק ג'ל (כשעה וחצי):\n\n🕗 08:00\n🕘 09:30\n🕙 10:30\n\nמה הכי מתאים?",
+      "timestamp": "22:05",
+      "status": "read",
+      "delayBeforeMs": 1200
+    },
+    {
+      "id": "7",
+      "sender": "incoming",
+      "text": "רגע, יש לכם דוגמאות של עיצובים שאפשר לראות לפני שאני סוגרת?",
+      "timestamp": "22:06",
+      "delayBeforeMs": 1600
+    },
+    {
+      "id": "8",
+      "sender": "outgoing",
+      "text": "בטח! הנה דוגמה מהספר עיצובים של הסטודיו 💅",
+      "timestamp": "22:06",
+      "status": "read",
+      "delayBeforeMs": 900
+    },
+    {
+      "id": "9",
+      "sender": "outgoing",
+      "text": "",
+      "timestamp": "22:06",
+      "status": "read",
+      "delayBeforeMs": 1400,
+      "image": {
+        "url": "design-1.jpg",
+        "caption": "מהסגנונות הכי פופולריים אצלנו 💖"
+      }
+    },
+    {
+      "id": "10",
+      "sender": "outgoing",
+      "text": "אם את רוצה משהו ספציפי שראית בפרופיל - פשוט שלחי לי תמונה ואעביר למעצבת 🎨",
+      "timestamp": "22:07",
+      "status": "read",
+      "delayBeforeMs": 1000
+    },
+    {
+      "id": "11",
+      "sender": "incoming",
+      "text": "וואו מהמם! אפשר ב-08:00?",
+      "timestamp": "22:08",
+      "delayBeforeMs": 1700
+    },
+    {
+      "id": "12",
+      "sender": "outgoing",
+      "text": "סגרנו ✨\nרק שם מלא לתיאום:",
+      "timestamp": "22:08",
+      "status": "read",
+      "delayBeforeMs": 800
+    },
+    {
+      "id": "13",
+      "sender": "incoming",
+      "text": "מאיה כהן",
+      "timestamp": "22:08",
+      "delayBeforeMs": 1100
+    },
+    {
+      "id": "14",
+      "sender": "outgoing",
+      "text": "מאיה, הצלת את הערב שלך 🙌\n\n📌 *סיכום התור:*\n💅 לק ג'ל לפי הדוגמה ששיתפנו\n📅 מחר בבוקר 08:00\n📍 הרצל 47, רמת גן (כניסה ב' קומה 2)\n💰 180 ₪\n🅿️ חניה חופשית בחצר\n⏱️ תהיי מוכנה עד 09:30 בערך\n\nתקבלי תזכורת בבוקר. שיהיה אירוע מהמם 💖",
+      "timestamp": "22:09",
+      "status": "read",
+      "delayBeforeMs": 1500
+    }
+  ]
+}

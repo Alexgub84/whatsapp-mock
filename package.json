@@ -21,6 +21,7 @@
     "build": "tsc -b && vite build",
     "build:lib": "vite build --config vite.lib.config.ts",
     "preview": "vite preview",
+    "test": "playwright test",
     "test:e2e": "playwright test"
   },
   "peerDependencies": {

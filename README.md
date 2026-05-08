@@ -32,7 +32,7 @@ const messages = [
 export default function Page() {
   return (
     <WhatsAppChat
-      header={{ name: "Jane", avatarUrl: "/avatar.png", subtitle: "online" }}
+      header={{ name: "Jane", profileImageUrl: "/avatar.png", subtitle: "online" }}
       messages={messages}
       autoplay={true}
     />
@@ -107,7 +107,7 @@ export default function PreviewPage() {
 
 | Prop | Type | Default | Description |
 | ---- | ---- | ------- | ----------- |
-| `header` | `{ name, avatarUrl?, subtitle?, unreadCount? }` | required | Contact info shown in the chat header |
+| `header` | `{ name, profileImageUrl?, subtitle?, unreadCount? }` | required | Contact info shown in the chat header |
 | `messages` | `Message[]` | required | Array of messages to animate |
 | `scale` | `number` | `1` | Scale factor for the phone frame (e.g. `0.8` = 80%). Container auto-sizes to match. |
 | `direction` | `"ltr" \| "rtl"` | `"ltr"` | Text/layout direction |
@@ -132,6 +132,12 @@ type Message = {
   reactions?: string[];
   typingDurationMs?: number;
   delayBeforeMs?: number;
+  image?: {
+    url: string;
+    width?: number;
+    height?: number;
+    caption?: string;
+  };
 };
 ```
 
@@ -167,22 +173,28 @@ npm install
 | `npm run dev` | Dev server (default: http://localhost:5173) |
 | `npm run build` | Typecheck and production build (demo app) |
 | `npm run build:lib` | Build the publishable library to `dist/` |
-| `npm run preview` | Serve the production build locally |
-| `npm run test:e2e` | Playwright tests |
+| `npm run preview` | Serve the production build locally (`http://localhost:4173` unless configured otherwise) |
+| `npm run test:e2e` | Playwright tests (`npm run test` alias) |
 
 ## Scenarios
 
 Conversation content is loaded from JSON under **`public/scenarios/<id>/scenario.json`**.
 
-Add a scenario by creating a folder: `public/scenarios/<your-id>/scenario.json`. Optional assets (for example avatars) sit in that same folder; `header.avatar` is resolved relative to **`/scenarios/<id>/`**.
+Add a scenario by creating a folder: `public/scenarios/<your-id>/scenario.json`. Optional assets (for example profile photos) sit in that same folder; `header.profile_image` is resolved relative to **`/scenarios/<id>/`** (see `resolveScenarioAssetUrl` in `src/scenario.ts` for absolute `http(s)://` and `/` URLs).
+
+Optional root field **`description`**: ignored by the app; use it in JSON to document the scenario for authors.
+
+**Image messages:** on any message, set optional **`image`**: `{ "url": "file.png", "caption": "optional" }`. Put the file in the same folder as `scenario.json`. Relative `url` values resolve to **`/scenarios/<id>/<url>`** (same rule as `header.profile_image`). URLs starting with `http://`, `https://`, or `/` are used as-is. Optional **`caption`** renders under the image; **`text`** renders below the caption when present. Use `text: ""` for an image-only bubble (caption and timestamp still show).
 
 The top bar reads folder ids from **`public/scenarios/registry.json`** (`routes` array). When you add a new scenario folder, append its id there so a button appears.
 
 Included examples:
 
-- **`default`** — Hebrew / RTL Pilates studio flow (uses `avatar.jpeg` beside `scenario.json` if present).
-- **`demo-en`** — Short English / LTR sample with no avatar.
-- **`kettlbel`** — Hebrew / RTL Adrenaline studio flow (uses `avatar.png` beside `scenario.json` if present).
+- **`default`** — Hebrew / RTL Pilates studio flow (uses `profile_image` pointing at `avatar.jpeg` beside `scenario.json` if present).
+- **`demo-en`** — Short English / LTR sample with no profile image.
+- **`kettlbel`** — Hebrew / RTL Adrenaline studio flow (uses `avatar.png` via `profile_image` beside `scenario.json` if present).
+- **`linoy-studio`** — Hebrew / RTL nail studio flow with design sample image (`profile_image.png`).
+- **`image-test`** — Minimal LTR scenario covering image + caption playback (see `description` inside `scenario.json`).
 
 **How to pick which scenario loads**
 
@@ -205,4 +217,6 @@ You can import `WhatsAppChat` directly and pass `header`, `messages`, and option
 
 ## E2E tests
 
-[`e2e/whatsapp.spec.ts`](e2e/whatsapp.spec.ts) exercises the default scenario at `/`. If you change `public/scenarios/default/scenario.json`, update the test expectations so they stay aligned.
+[`e2e/whatsapp.spec.ts`](e2e/whatsapp.spec.ts) runs Playwright against a **production build** (`npm run build` + `vite preview` on port 4173) so long playback scenarios are stable. Default scenario playback is exercised at `/`. The **`image-test`** scenario validates image messages (`/?scenario=image-test`). If you change scenario JSON counts or copy, update the expectations accordingly.
+
+`npm run test` runs the same Playwright suite as `npm run test:e2e`.

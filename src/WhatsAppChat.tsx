@@ -25,11 +25,17 @@ export type Message = {
   reactions?: string[];
   typingDurationMs?: number;
   delayBeforeMs?: number;
+  image?: {
+    url: string;
+    width?: number;
+    height?: number;
+    caption?: string;
+  };
 };
 
 export type WhatsAppChatProps = {
   header: {
-    avatarUrl?: string;
+    profileImageUrl?: string;
     name: string;
     subtitle?: string;
     unreadCount?: number;
@@ -61,6 +67,10 @@ const delay = (ms: number) =>
 function typingDuration(text: string, override?: number): number {
   if (override !== undefined) return override;
   return Math.min(3000, Math.max(800, text.length * 30));
+}
+
+function incomingTypingSource(msg: Message): string {
+  return `${msg.text}${msg.image?.caption ?? ""}`;
 }
 
 // ─── Doodle background (inline SVG data URI) ─────────────────────────────────
@@ -218,13 +228,13 @@ function HeaderVideoCallIcon({
 }
 
 function ChatHeader({
-  avatarUrl,
+  profileImageUrl,
   name,
   subtitle,
   unreadCount,
   rtl,
 }: {
-  avatarUrl?: string;
+  profileImageUrl?: string;
   name: string;
   subtitle: string;
   unreadCount?: number;
@@ -246,11 +256,11 @@ function ChatHeader({
     </div>
   );
 
-  const avatarBlock = (
+  const profileImageBlock = (
     <div className="w-10 h-10 rounded-full overflow-hidden bg-[#DFE5E7] shrink-0 flex items-center justify-center">
-      {avatarUrl ? (
+      {profileImageUrl ? (
         <img
-          src={avatarUrl}
+          src={profileImageUrl}
           alt={name}
           className="w-full h-full object-cover"
         />
@@ -299,7 +309,7 @@ function ChatHeader({
       <div className="flex shrink-0 items-center">{backBlock}</div>
 
       <div className="flex flex-1 min-w-0 items-center gap-2">
-        {avatarBlock}
+        {profileImageBlock}
         {titleBlock}
       </div>
 
@@ -354,6 +364,7 @@ function MessageBubble({
   showReaction: boolean;
 }) {
   const isOut = message.sender === "outgoing";
+  const trimmedBodyText = message.text.trim();
 
   // In RTL: incoming = right, outgoing = left
   // In LTR: incoming = left, outgoing = right
@@ -418,17 +429,61 @@ function MessageBubble({
             </div>
           )}
 
-          {/* Message text + timestamp: inline flow so meta stays tight after text when wrapped */}
-          <div
-            className="text-[16px] leading-[1.3] text-black break-words"
-            dir={rtl ? "rtl" : "ltr"}
-          >
-            {message.text}
-            <span className="inline-flex items-center gap-[2px] align-bottom whitespace-nowrap text-[11px] text-[#667781] ps-1">
-              {message.timestamp}
-              {isOut && <ReadReceipt status={message.status} />}
-            </span>
-          </div>
+          {message.image ? (
+            <>
+              <img
+                data-testid="message-image"
+                src={message.image.url}
+                alt=""
+                width={message.image.width}
+                height={message.image.height}
+                className="block max-w-full rounded-md"
+                style={{ maxHeight: 280 }}
+                loading="lazy"
+              />
+              {message.image.caption?.trim() ? (
+                <div
+                  className="text-[14px] leading-[1.3] text-black break-words mt-1"
+                  dir={rtl ? "rtl" : "ltr"}
+                >
+                  {message.image.caption.trim()}
+                </div>
+              ) : null}
+              {trimmedBodyText ? (
+                <div
+                  className="text-[16px] leading-[1.3] text-black break-words mt-1"
+                  dir={rtl ? "rtl" : "ltr"}
+                >
+                  {trimmedBodyText}
+                  <span className="inline-flex items-center gap-[2px] align-bottom whitespace-nowrap text-[11px] text-[#667781] ps-1">
+                    {message.timestamp}
+                    {isOut && <ReadReceipt status={message.status} />}
+                  </span>
+                </div>
+              ) : (
+                <div
+                  className="flex justify-end items-end mt-1"
+                  dir={rtl ? "rtl" : "ltr"}
+                >
+                  <span className="inline-flex items-center gap-[2px] whitespace-nowrap text-[11px] text-[#667781] ps-1">
+                    {message.timestamp}
+                    {isOut && <ReadReceipt status={message.status} />}
+                  </span>
+                </div>
+              )}
+            </>
+          ) : (
+            <div
+              className="text-[16px] leading-[1.3] text-black break-words"
+              dir={rtl ? "rtl" : "ltr"}
+            >
+              {message.text}
+              <span className="inline-flex items-center gap-[2px] align-bottom whitespace-nowrap text-[11px] text-[#667781] ps-1">
+                {message.timestamp}
+                {isOut && <ReadReceipt status={message.status} />}
+              </span>
+            </div>
+          )}
         </div>
 
         {/* Emoji reaction */}
@@ -590,7 +645,9 @@ export default function WhatsAppChat({
       if (msg.sender === "incoming") {
         setShowTyping(true);
         scrollToBottom();
-        await delay(typingDuration(msg.text, msg.typingDurationMs));
+        await delay(
+          typingDuration(incomingTypingSource(msg), msg.typingDurationMs),
+        );
         if (cancelRef.current) break;
         setShowTyping(false);
       }
@@ -703,7 +760,7 @@ export default function WhatsAppChat({
           {showStatusBar && <StatusBar time={displayedStatusTime} />}
 
           <ChatHeader
-            avatarUrl={header.avatarUrl}
+            profileImageUrl={header.profileImageUrl}
             name={header.name}
             subtitle={header.subtitle ?? "tap here to add to contacts"}
             unreadCount={header.unreadCount}

@@ -3,6 +3,7 @@ export type { WhatsAppChatProps, WhatsAppDemoProps, Message } from "./WhatsAppCh
 export type {
   ScenarioFile,
   ScenarioMessage,
+  ScenarioMessageImage,
   LoadedScenario,
   Direction,
   MessageStatus,
