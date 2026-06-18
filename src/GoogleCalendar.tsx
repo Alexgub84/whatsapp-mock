@@ -141,14 +141,18 @@ function EventBlock({
         boxShadow: isNew
           ? `0 0 0 3px ${hex}55, 0 8px 18px rgba(0,0,0,0.30)`
           : "0 1px 2px rgba(0,0,0,0.18)",
-        transform: isNew ? (popped ? "scale(1)" : "scale(0.6)") : undefined,
+        transform: isNew
+          ? popped
+            ? "translateY(0) scale(1)"
+            : "translateY(18px) scale(0.85)"
+          : undefined,
         opacity: isNew ? (popped ? 1 : 0) : 1,
         transition: isNew
-          ? "transform 0.5s cubic-bezier(0.34,1.56,0.64,1), opacity 0.4s ease-out"
+          ? "transform 0.55s cubic-bezier(0.34,1.56,0.64,1), opacity 0.45s ease-out"
           : undefined,
         animation:
           isNew && popped
-            ? "gc-pulse 1.3s ease-out 0.45s 3"
+            ? "gc-glow 1.8s ease-in-out 0.2s infinite"
             : undefined,
         zIndex: isNew ? 5 : 2,
       }}
@@ -199,6 +203,7 @@ export default function GoogleCalendar({
 
   useEffect(() => {
     if (!animateIn || !newEvent) return;
+    // Wait until the flip (0.7s) has finished, then add the event.
     const t = setTimeout(() => {
       setPopped(true);
       if (gridRef.current) {
@@ -206,7 +211,7 @@ export default function GoogleCalendar({
           ((toMin(newEvent.time) - dayStartHour * 60) / 60) * HOUR_PX;
         gridRef.current.scrollTo({ top: Math.max(0, top - 150), behavior: "smooth" });
       }
-    }, 650);
+    }, 1100);
     return () => clearTimeout(t);
   }, [animateIn, newEvent, dayStartHour]);
 
@@ -248,10 +253,19 @@ export default function GoogleCalendar({
           }}
           dir="ltr"
         >
-          <style>{`@keyframes gc-pulse {
-            0%   { box-shadow: 0 0 0 0 rgba(255,193,7,0.80), 0 8px 18px rgba(0,0,0,0.30); }
-            70%  { box-shadow: 0 0 0 16px rgba(255,193,7,0), 0 8px 18px rgba(0,0,0,0.30); }
-            100% { box-shadow: 0 0 0 0 rgba(255,193,7,0), 0 8px 18px rgba(0,0,0,0.30); }
+          <style>{`@keyframes gc-glow {
+            0%, 100% {
+              box-shadow:
+                0 0 0 2px rgba(255,193,7,0.95),
+                0 0 16px 4px rgba(255,213,79,0.85),
+                0 8px 18px rgba(0,0,0,0.30);
+            }
+            50% {
+              box-shadow:
+                0 0 0 9px rgba(255,193,7,0.55),
+                0 0 40px 16px rgba(255,213,79,0.95),
+                0 8px 18px rgba(0,0,0,0.30);
+            }
           }`}</style>
 
           <div
