@@ -2,7 +2,8 @@
   "description": "Barber shop (Hebrew, RTL): customer asks prices, books an appointment, gets address + time + instructions, then the screen flips to the barber's Google Calendar where the booking pops in.",
   "header": {
     "name": "מספרת קינגס",
-    "subtitle": "מחובר"
+    "subtitle": "מחובר",
+    "profile_image": "profile_image.png"
   },
   "direction": "rtl",
   "statusBarTime": "20:13",
