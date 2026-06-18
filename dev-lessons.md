@@ -38,3 +38,15 @@ to exist.
 **Solution:** Serve the demo with `vite preview` on `:4173` from Playwright (`npm run build` then preview, `reuseExistingServer: false`, matching `strictPort` on preview). Dev uses `vite` on `5173` without `strictPort` so a busy port falls forward to the next free one.
 
 **Lesson:** Prefer a production preview (or deterministic port + no reuse) for e2e that stress long SPA sessions; pairing `strictPort` with the Playwright `url` avoids silent wrong-server mismatches.
+
+## 2026-06-18 (scenario message style)
+
+**Decision:** Scenario message text uses **no emojis**, and any list (time slots,
+options, booking details) is broken **one item per line** (`\n`), with blank
+lines (`\n\n`) separating logical blocks.
+
+**Why:** Cleaner, more professional/structured mockups; run-together lists read
+poorly on the phone frame.
+
+**Lesson:** Treat message `text` as structured copy — newlines do the layout.
+Applies to new/edited scenarios (existing demos kept as-is unless revisited).

@@ -21,6 +21,13 @@ Add your own: drop a `calendar` block into any
 `public/scenarios/<id>/scenario.json` (see `barber-shop`) — events, a `newEvent`,
 `monthLabel`/`dayLabel`/`nowTime`. No component code needed.
 
+### Scenario message conventions
+
+- **No emojis** in message text — keep it clean and professional.
+- **One item per line** for any list (time slots, options, booking details): put
+  each on its own line with `\n`, not run together on one line.
+- Separate logical blocks with a blank line (`\n\n`) for readability.
+
 ## Installation
 
 This package is published to GitHub Packages. Add an `.npmrc` to your project:

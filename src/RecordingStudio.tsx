@@ -37,7 +37,7 @@ export default function RecordingStudio({
   showInputBar = true,
   syncStatusBarFromMessages = true,
   calendar,
-  autoFlipDelayMs = 1400,
+  autoFlipDelayMs = 4400,
   scale = 0.82,
   showControls = true,
 }: RecordingStudioProps) {

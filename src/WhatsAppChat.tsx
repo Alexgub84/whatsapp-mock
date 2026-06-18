@@ -453,7 +453,7 @@ function MessageBubble({
               ) : null}
               {trimmedBodyText ? (
                 <div
-                  className="text-[16px] leading-[1.3] text-black break-words mt-1"
+                  className="text-[16px] leading-[1.3] text-black break-words whitespace-pre-line mt-1"
                   dir={rtl ? "rtl" : "ltr"}
                 >
                   {trimmedBodyText}
@@ -476,7 +476,7 @@ function MessageBubble({
             </>
           ) : (
             <div
-              className="text-[16px] leading-[1.3] text-black break-words"
+              className="text-[16px] leading-[1.3] text-black break-words whitespace-pre-line"
               dir={rtl ? "rtl" : "ltr"}
             >
               {message.text}

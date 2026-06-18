@@ -128,7 +128,7 @@ function EventBlock({
   return (
     <div
       data-testid={isNew ? "calendar-event-new" : "calendar-event"}
-      className="absolute overflow-hidden text-white shadow"
+      className="absolute text-white shadow"
       style={{
         top,
         height,
@@ -136,6 +136,7 @@ function EventBlock({
         insetInlineEnd: 12,
         borderRadius: 8,
         padding: "4px 10px",
+        overflow: isNew ? "visible" : "hidden",
         background: hex,
         boxShadow: isNew
           ? `0 0 0 3px ${hex}40, 0 8px 18px rgba(0,0,0,0.30)`
@@ -165,6 +166,34 @@ function EventBlock({
         <div className="text-[11px] leading-tight opacity-95 truncate">
           {ev.subtitle}
         </div>
+      )}
+
+      {isNew && (
+        <svg
+          className="pointer-events-none absolute"
+          style={{ top: -12, left: -10, width: "calc(100% + 20px)", height: "calc(100% + 24px)" }}
+          viewBox="0 0 100 100"
+          preserveAspectRatio="none"
+          fill="none"
+          aria-hidden="true"
+        >
+          {/* hand-drawn marker loop with a slight overshoot tail */}
+          <path
+            d="M50 6 C80 4 97 24 95 50 C94 77 73 96 49 95 C24 96 4 76 6 50 C5 25 24 5 54 5 C66 5 76 9 82 16"
+            pathLength={100}
+            stroke="#ff3b30"
+            strokeWidth={3}
+            strokeLinecap="round"
+            vectorEffect="non-scaling-stroke"
+            style={{
+              strokeDasharray: 100,
+              strokeDashoffset: popped ? 0 : 100,
+              animation: popped
+                ? "gc-draw 0.85s cubic-bezier(0.65,0,0.35,1) 0.35s both"
+                : undefined,
+            }}
+          />
+        </svg>
       )}
     </div>
   );
@@ -243,6 +272,8 @@ export default function GoogleCalendar({
           }}
           dir="ltr"
         >
+          <style>{`@keyframes gc-draw { from { stroke-dashoffset: 100; } to { stroke-dashoffset: 0; } }`}</style>
+
           <div
             className="absolute top-0 left-1/2 -translate-x-1/2 z-10 bg-[#1a1a1a]"
             style={{ width: 126, height: 34, borderRadius: "0 0 20px 20px" }}
