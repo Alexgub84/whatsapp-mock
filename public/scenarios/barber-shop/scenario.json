@@ -1,0 +1,96 @@
+{
+  "description": "Barber shop (Hebrew, RTL): customer asks prices, books an appointment, gets address + time + instructions, then the screen flips to the barber's Google Calendar where the booking pops in.",
+  "header": {
+    "name": "מספרת קינגס",
+    "subtitle": "מחובר"
+  },
+  "direction": "rtl",
+  "statusBarTime": "20:13",
+  "syncStatusBarFromMessages": true,
+  "showStatusBar": true,
+  "showInputBar": true,
+  "messages": [
+    {
+      "id": "1",
+      "sender": "incoming",
+      "text": "היי, כמה עולה תספורת + עיצוב זקן?",
+      "timestamp": "20:13",
+      "delayBeforeMs": 600
+    },
+    {
+      "id": "2",
+      "sender": "outgoing",
+      "text": "היי! אני העוזר הדיגיטלי של מספרת קינגס 💈\nתספורת גברים – 70₪\nתספורת + עיצוב זקן – 100₪",
+      "timestamp": "20:13",
+      "status": "read",
+      "delayBeforeMs": 1200
+    },
+    {
+      "id": "3",
+      "sender": "incoming",
+      "text": "מעולה, אפשר לקבוע תור למחר?",
+      "timestamp": "20:14",
+      "delayBeforeMs": 1600
+    },
+    {
+      "id": "4",
+      "sender": "outgoing",
+      "text": "בטח 🙌 מתי נוח לך מחר?\nיש לי פנוי ב:\n🕐 13:00\n🕝 14:30\n🕔 17:00",
+      "timestamp": "20:14",
+      "status": "read",
+      "delayBeforeMs": 1100
+    },
+    {
+      "id": "5",
+      "sender": "incoming",
+      "text": "14:30 מצוין",
+      "timestamp": "20:15",
+      "delayBeforeMs": 1500
+    },
+    {
+      "id": "6",
+      "sender": "outgoing",
+      "text": "אפשר שם וטלפון לשמירת התור?",
+      "timestamp": "20:15",
+      "status": "read",
+      "delayBeforeMs": 900
+    },
+    {
+      "id": "7",
+      "sender": "incoming",
+      "text": "דוד כהן, 052-1234567",
+      "timestamp": "20:16",
+      "delayBeforeMs": 1800
+    },
+    {
+      "id": "8",
+      "sender": "outgoing",
+      "text": "מעולה דוד! קבעתי לך ✅\n📅 מחר, יום רביעי, 14:30\n💈 תספורת + עיצוב זקן\n📍 הרצל 25, תל אביב (קומה 2)\n\nכמה דברים קטנים:\n• מומלץ להגיע 5 דקות לפני\n• ביטול עד 3 שעות לפני התור\n\nאשלח לך תזכורת יום לפני 🔔",
+      "timestamp": "20:16",
+      "status": "read",
+      "delayBeforeMs": 1300
+    }
+  ],
+  "calendar": {
+    "monthLabel": "יוני 2026",
+    "dayLabel": "יום רביעי, 18 ביוני",
+    "nowTime": "13:50",
+    "dayStartHour": 8,
+    "dayEndHour": 21,
+    "newBadge": "חדש",
+    "events": [
+      { "time": "09:00", "durationMin": 30, "title": "תספורת", "subtitle": "יוסי ל.", "color": "blue" },
+      { "time": "10:00", "durationMin": 45, "title": "פייד", "subtitle": "דניאל ר.", "color": "purple" },
+      { "time": "11:30", "durationMin": 20, "title": "עיצוב זקן", "subtitle": "אבי מ.", "color": "orange" },
+      { "time": "13:00", "durationMin": 30, "title": "תספורת ילדים", "subtitle": "נועם ק.", "color": "teal" },
+      { "time": "16:30", "durationMin": 45, "title": "גילוח חם", "subtitle": "איתן ב.", "color": "pink" }
+    ],
+    "newEvent": {
+      "time": "14:30",
+      "durationMin": 45,
+      "title": "תספורת + עיצוב זקן",
+      "subtitle": "דוד כהן · 052-1234567",
+      "color": "green"
+    }
+  }
+}

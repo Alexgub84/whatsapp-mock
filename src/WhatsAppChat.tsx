@@ -49,6 +49,8 @@ export type WhatsAppChatProps = {
   showControls?: boolean;
   /** When true, status bar clock follows message timestamps (idle = first message). When false, uses statusBarTime only. */
   syncStatusBarFromMessages?: boolean;
+  /** Fired once when autoplay/play() finishes revealing the last message. */
+  onComplete?: () => void;
   /**
    * Scale factor applied to the phone frame via CSS transform.
    * 1 = full size (390×844 px), 0.8 = 80%, etc.
@@ -597,6 +599,7 @@ export default function WhatsAppChat({
   syncStatusBarFromMessages = true,
   scale = 1,
   className,
+  onComplete,
 }: WhatsAppChatProps) {
   const rtl = direction === "rtl";
 
@@ -670,7 +673,8 @@ export default function WhatsAppChat({
     setShowTyping(false);
     setIsPlaying(false);
     setDone(true);
-  }, [isPlaying, messages, scrollToBottom]);
+    if (!cancelRef.current) onComplete?.();
+  }, [isPlaying, messages, scrollToBottom, onComplete]);
 
   const reset = useCallback(() => {
     cancelRef.current = true;

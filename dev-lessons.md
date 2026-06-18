@@ -1,5 +1,24 @@
 # Dev lessons
 
+## 2026-06-18 (recording studio: chat → calendar flip)
+
+**Context:** Needed demo videos showing a WhatsApp booking conversation, then the
+same phone screen turning into a Google Calendar where the new appointment
+appears — reusable across scenarios.
+
+**Decision:** Kept it data-driven on top of the existing scenario system. Added an
+optional `calendar` block to `ScenarioFile`; when present, the playground renders
+`RecordingStudio` (a 3D `rotateY` flip between `WhatsAppChat` and a new
+`GoogleCalendar` view) instead of a bare chat. The only change inside the existing
+component was an additive `onComplete` callback fired at the end of `play()`, used
+to auto-flip when playback finishes.
+
+**Lesson:** A new "mode" rode entirely on the JSON-scenario seam — no breaking
+changes to `WhatsAppChat`, and a new recording is just a scenario file. The flip's
+back face (`GoogleCalendar`) is always in the DOM (rotated away), so e2e/screenshot
+logic must wait for the actual flip transform, not merely for the calendar element
+to exist.
+
 ## 2026-05-08 (dev port)
 
 **Problem:** `npm run dev` crashed with "Port 5173 is already in use" because Vite was configured with `strictPort: true`.

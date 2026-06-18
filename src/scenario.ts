@@ -1,5 +1,23 @@
+import type { CalendarEvent } from "./GoogleCalendar";
+
 export type MessageStatus = "sent" | "delivered" | "read";
 export type Direction = "ltr" | "rtl";
+
+/**
+ * Optional calendar block. When present on a scenario, the playground renders
+ * the RecordingStudio (chat plays, then the screen flips to this calendar and
+ * `newEvent` pops in).
+ */
+export type ScenarioCalendar = {
+  monthLabel: string;
+  dayLabel: string;
+  nowTime?: string;
+  dayStartHour?: number;
+  dayEndHour?: number;
+  newBadge?: string;
+  events: CalendarEvent[];
+  newEvent: CalendarEvent;
+};
 
 export type ScenarioMessageImage = {
   url: string;
@@ -41,6 +59,7 @@ export type ScenarioFile = {
   autoplay?: boolean;
   showControls?: boolean;
   syncStatusBarFromMessages?: boolean;
+  calendar?: ScenarioCalendar;
 };
 
 export type LoadedScenario = ScenarioFile & {

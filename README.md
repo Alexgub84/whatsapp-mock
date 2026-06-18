@@ -4,6 +4,23 @@ An **iPhone-style WhatsApp chat UI** component for React with scripted playback:
 
 The main UI lives in [`src/WhatsAppChat.tsx`](src/WhatsAppChat.tsx). Full behavior and props are documented in [`whatsapp-chat-component-spec.md`](whatsapp-chat-component-spec.md).
 
+### Recording studio — chat → Google-Calendar flip
+
+For demo videos where a booking conversation should be seen landing on a
+calendar: a scenario can carry a `calendar` block. When present, the playground
+renders [`RecordingStudio`](src/RecordingStudio.tsx) — it autoplays the
+[`WhatsAppChat`](src/WhatsAppChat.tsx), then the phone screen **flips** to
+[`GoogleCalendar`](src/GoogleCalendar.tsx) where the new appointment **pops in**.
+
+Try it: `npm run dev` → pick **Barber-Shop** (Hebrew, RTL). The chat asks prices,
+books an appointment, and the screen flips to the barber's calendar where the new
+event appears with the customer's name + phone. Off-frame **Restart** / **Flip**
+buttons help you record; screen-record the phone frame only.
+
+Add your own: drop a `calendar` block into any
+`public/scenarios/<id>/scenario.json` (see `barber-shop`) — events, a `newEvent`,
+`monthLabel`/`dayLabel`/`nowTime`. No component code needed.
+
 ## Installation
 
 This package is published to GitHub Packages. Add an `.npmrc` to your project:

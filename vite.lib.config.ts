@@ -9,7 +9,13 @@ export default defineConfig({
     react(),
     tailwindcss(),
     dts({
-      include: ["src/index.ts", "src/WhatsAppChat.tsx", "src/scenario.ts"],
+      include: [
+        "src/index.ts",
+        "src/WhatsAppChat.tsx",
+        "src/GoogleCalendar.tsx",
+        "src/RecordingStudio.tsx",
+        "src/scenario.ts",
+      ],
       tsconfigPath: "./tsconfig.lib.json",
       rollupTypes: true,
     }),

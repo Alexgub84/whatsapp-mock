@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import WhatsAppChat, { WhatsAppDemo } from "./WhatsAppChat";
+import RecordingStudio from "./RecordingStudio";
 import {
   loadScenario,
   loadScenarioRouteIds,
@@ -95,6 +96,24 @@ export default function App() {
           Loading…
         </div>
       </div>
+    );
+  }
+
+  if (data.calendar) {
+    return (
+      <>
+        {nav}
+        <RecordingStudio
+          header={data.header}
+          messages={data.messages}
+          direction={data.direction}
+          statusBarTime={data.statusBarTime}
+          showStatusBar={data.showStatusBar}
+          showInputBar={data.showInputBar}
+          syncStatusBarFromMessages={data.syncStatusBarFromMessages}
+          calendar={data.calendar}
+        />
+      </>
     );
   }
 
