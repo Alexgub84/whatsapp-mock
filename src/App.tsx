@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import WhatsAppChat, { WhatsAppDemo } from "./WhatsAppChat";
+import RecordingStudio from "./RecordingStudio";
 import {
   loadScenario,
   loadScenarioRouteIds,
@@ -13,10 +14,16 @@ function routeButtonLabel(id: string): string {
     .join("-");
 }
 
+function initialScenarioId(): string {
+  if (typeof window !== "undefined") {
+    const fromUrl = new URLSearchParams(window.location.search).get("scenario");
+    if (fromUrl) return fromUrl;
+  }
+  return import.meta.env.VITE_SCENARIO ?? "default";
+}
+
 export default function App() {
-  const [scenarioId, setScenarioId] = useState(
-    () => import.meta.env.VITE_SCENARIO ?? "default",
-  );
+  const [scenarioId, setScenarioId] = useState(initialScenarioId);
   const [routes, setRoutes] = useState<string[]>([]);
   const [data, setData] = useState<LoadedScenario | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -28,6 +35,13 @@ export default function App() {
       .catch(() => setRoutes([]));
     return () => controller.abort();
   }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const url = new URL(window.location.href);
+    url.searchParams.set("scenario", scenarioId);
+    window.history.replaceState(null, "", url);
+  }, [scenarioId]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -95,6 +109,24 @@ export default function App() {
           Loading…
         </div>
       </div>
+    );
+  }
+
+  if (data.calendar) {
+    return (
+      <>
+        {nav}
+        <RecordingStudio
+          header={data.header}
+          messages={data.messages}
+          direction={data.direction}
+          statusBarTime={data.statusBarTime}
+          showStatusBar={data.showStatusBar}
+          showInputBar={data.showInputBar}
+          syncStatusBarFromMessages={data.syncStatusBarFromMessages}
+          calendar={data.calendar}
+        />
+      </>
     );
   }
 
