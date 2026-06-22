@@ -13,7 +13,7 @@
     {
       "id": "1",
       "sender": "incoming",
-      "text": "Hi — are you open tomorrow morning?",
+      "text": "Hi, are you open tomorrow morning?",
       "timestamp": "09:38",
       "delayBeforeMs": 600
     },

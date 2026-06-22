@@ -40,6 +40,8 @@ export type GoogleCalendarProps = {
   statusBarTime?: string;
   /** Label for the "new" badge (RTL default Hebrew). */
   newBadge?: string;
+  /** Fired once the new-event pop-in has settled (scene "done" signal). */
+  onSettled?: () => void;
   scale?: number;
   className?: string;
 };
@@ -194,26 +196,42 @@ export default function GoogleCalendar({
   showStatusBar = true,
   statusBarTime = "14:05",
   newBadge = "חדש",
+  onSettled,
   scale = 1,
   className,
 }: GoogleCalendarProps) {
   const rtl = direction === "rtl";
   const [popped, setPopped] = useState(false);
   const gridRef = useRef<HTMLDivElement>(null);
+  const settledRef = useRef(false);
 
   useEffect(() => {
-    if (!animateIn || !newEvent) return;
-    // Wait until the flip (0.7s) has finished, then add the event.
+    if (!animateIn) return;
+    settledRef.current = false;
+    // Wait until the flip (0.7s) has finished, then add the event and signal
+    // that the scene has settled (event-driven, no blind outer timer).
     const t = setTimeout(() => {
-      setPopped(true);
-      if (gridRef.current) {
-        const top =
-          ((toMin(newEvent.time) - dayStartHour * 60) / 60) * HOUR_PX;
-        gridRef.current.scrollTo({ top: Math.max(0, top - 150), behavior: "smooth" });
+      if (newEvent) {
+        setPopped(true);
+        if (gridRef.current) {
+          const top =
+            ((toMin(newEvent.time) - dayStartHour * 60) / 60) * HOUR_PX;
+          gridRef.current.scrollTo({
+            top: Math.max(0, top - 150),
+            behavior: "smooth",
+          });
+        }
       }
+      // Fire after the pop-in transition (~0.6s) has had time to play out.
+      const s = setTimeout(() => {
+        if (settledRef.current) return;
+        settledRef.current = true;
+        onSettled?.();
+      }, 700);
+      return () => clearTimeout(s);
     }, 1100);
     return () => clearTimeout(t);
-  }, [animateIn, newEvent, dayStartHour]);
+  }, [animateIn, newEvent, dayStartHour, onSettled]);
 
   const hours: number[] = [];
   for (let h = dayStartHour; h <= dayEndHour; h++) hours.push(h);

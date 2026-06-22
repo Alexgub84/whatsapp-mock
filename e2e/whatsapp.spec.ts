@@ -44,22 +44,78 @@ test("barber-shop scenario flips to the calendar with the new booking", async ({
 
   await page.getByTestId("scenario-select").selectOption("barber-shop");
 
-  // Recording studio renders (chat autoplays inside it).
+  // Recording studio renders, starting with the branded intro card.
   await expect(page.getByTestId("recording-studio")).toBeVisible();
+  await expect(page.getByTestId("intro-frame")).toBeVisible();
   await expect(page.getByTestId("contact-name")).toHaveText("מספרת קינגס");
 
-  // Manually flip to the calendar (no need to wait for full playback).
-  await page.getByTestId("studio-flip").click();
+  // Manually flip through the scenes until the calendar shows its new booking.
+  const newEvent = page.getByTestId("calendar-event-new");
+  const flipBtn = page.getByTestId("studio-flip");
+  for (let i = 0; i < 6 && !(await newEvent.isVisible()); i++) {
+    await flipBtn.click();
+    await page.waitForTimeout(800);
+  }
 
   const calendar = page.getByTestId("calendar-view");
   await expect(calendar).toBeVisible();
 
   // Pre-seeded bookings + the new event that pops in.
   await expect(page.getByTestId("calendar-event")).toHaveCount(5);
-  const newEvent = page.getByTestId("calendar-event-new");
   await expect(newEvent).toBeVisible();
   await expect(newEvent).toContainText("דוד כהן");
   await expect(newEvent).toContainText("חדש");
+});
+
+test("barber-shop runs the full montage: reminder, then staff roster", async ({
+  page,
+}) => {
+  test.setTimeout(150_000);
+
+  await page.goto("/");
+  await page.getByTestId("scenario-select").selectOption("barber-shop");
+
+  await expect(page.getByTestId("recording-studio")).toBeVisible();
+
+  // Opens on the branded intro title card (logo + Hebrew leading line).
+  await expect(page.getByTestId("intro-frame")).toBeVisible();
+  await expect(page.getByTestId("intro-tagline")).toHaveText(
+    "עסק שמתנהל חכם מרוויח יותר",
+  );
+
+  // Then a branded chapter caption announces the chat scene.
+  await expect(page.getByText("מענה ללקוח בוואטסאפ")).toBeVisible({
+    timeout: 15_000,
+  });
+
+  // Intro/caption fade → chat → caption → calendar → caption → reminder.
+  await expect(page.getByText("תזכורת לתור שלך מחר:")).toBeVisible({
+    timeout: 80_000,
+  });
+
+  // A date-separator chip makes the reminder read as a different day.
+  await expect(page.getByTestId("date-separator")).toHaveText("היום");
+
+  // The payment URL renders as a blue WhatsApp-style link.
+  const link = page.getByRole("link", {
+    name: "https://pay.kings-barber.co.il/d4k2",
+  });
+  await expect(link).toBeVisible();
+  await expect(link).toHaveCSS("color", "rgb(2, 126, 181)");
+
+  // The booking conversation is still shown beneath the reminder.
+  await expect(page.getByTestId("message-bubble")).toHaveCount(9);
+
+  // Finally the screen flips to the staff roster and assigns the whole team.
+  await expect(page.getByTestId("staff-view")).toBeVisible({ timeout: 30_000 });
+  await expect(page.getByTestId("staff-shift")).toHaveCount(5);
+  await expect(page.getByTestId("staff-assignee").first()).toContainText(
+    "יוסי לוי",
+    { timeout: 15_000 },
+  );
+  await expect(page.getByTestId("staff-progress")).toHaveText("5/5", {
+    timeout: 15_000,
+  });
 });
 
 test("image-test scenario renders image messages", async ({ page }) => {

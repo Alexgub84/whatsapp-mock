@@ -8,11 +8,21 @@ export type {
 } from "./GoogleCalendar";
 export { default as RecordingStudio } from "./RecordingStudio";
 export type { RecordingStudioProps } from "./RecordingStudio";
+export { default as StaffRoster } from "./StaffRoster";
+export type {
+  StaffRosterProps,
+  StaffShift,
+  StaffColor,
+} from "./StaffRoster";
+export { default as IntroCard } from "./IntroCard";
+export type { IntroCardProps } from "./IntroCard";
 export type {
   ScenarioFile,
   ScenarioMessage,
   ScenarioMessageImage,
   ScenarioCalendar,
+  ScenarioStaff,
+  ScenarioIntro,
   LoadedScenario,
   Direction,
   MessageStatus,

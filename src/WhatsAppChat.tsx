@@ -5,6 +5,7 @@ import {
   useCallback,
   useMemo,
   type ReactNode,
+  type CSSProperties,
 } from "react";
 import "./styles.css";
 import { ChevronLeft, Phone, Plus, Camera, Mic } from "lucide-react";
@@ -16,6 +17,8 @@ export type Message = {
   sender: "incoming" | "outgoing";
   text: string;
   timestamp: string;
+  /** Date-separator chip rendered above this message (e.g. "היום", "אתמול"). */
+  daySeparator?: string;
   status?: "sent" | "delivered" | "read";
   replyTo?: {
     senderName: string;
@@ -47,6 +50,12 @@ export type WhatsAppChatProps = {
   showInputBar?: boolean;
   autoplay?: boolean;
   showControls?: boolean;
+  /**
+   * Messages before this index are shown instantly (no typing/delay) and
+   * playback animates only from this index onward. Used to resume a chat that
+   * already revealed earlier messages — e.g. after a calendar flip-back.
+   */
+  playFromIndex?: number;
   /** When true, status bar clock follows message timestamps (idle = first message). When false, uses statusBarTime only. */
   syncStatusBarFromMessages?: boolean;
   /** Fired once when autoplay/play() finishes revealing the last message. */
@@ -59,9 +68,58 @@ export type WhatsAppChatProps = {
    */
   scale?: number;
   className?: string;
+  /**
+   * Optional custom chat wallpaper. Replaces the default doodle pattern with an
+   * image plus a flat dark overlay that mutes it so the bubbles and text stay
+   * high-contrast and clean.
+   */
+  chatBackground?: ChatBackground;
+};
+
+/** Custom chat wallpaper: a (usually branded) image dimmed by a flat overlay. */
+export type ChatBackground = {
+  /** Resolved image URL (e.g. /scenarios/<id>/chat-bg.png). */
+  imageUrl: string;
+  /** Overlay color drawn over the image to mute it. Default WhatsApp dark `#0b141a`. */
+  overlayColor?: string;
+  /** Overlay alpha 0..1. Higher = darker image, cleaner text. Default 0.55. */
+  overlayOpacity?: number;
 };
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
+
+/** `#rrggbb` (or `#rgb`) + alpha → `rgba(r,g,b,a)`. Falls back to the input. */
+function hexToRgba(hex: string, alpha: number): string {
+  let h = hex.trim().replace("#", "");
+  if (h.length === 3) h = h.split("").map((c) => c + c).join("");
+  if (h.length !== 6) return hex;
+  const n = parseInt(h, 16);
+  const r = (n >> 16) & 255;
+  const g = (n >> 8) & 255;
+  const b = n & 255;
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
+/** Build the message-area background style: custom wallpaper, or the doodle. */
+function chatBackgroundStyle(bg?: ChatBackground): CSSProperties {
+  if (!bg) {
+    return {
+      backgroundImage: DOODLE_URI,
+      backgroundSize: "200px 200px",
+      backgroundColor: "#EFE7DD",
+    };
+  }
+  const color = bg.overlayColor ?? "#0b141a";
+  const alpha = bg.overlayOpacity ?? 0.55;
+  const overlay = hexToRgba(color, alpha);
+  return {
+    backgroundColor: color,
+    backgroundImage: `linear-gradient(${overlay}, ${overlay}), url("${bg.imageUrl}")`,
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    backgroundRepeat: "no-repeat",
+  };
+}
 
 const delay = (ms: number) =>
   new Promise<void>((resolve) => setTimeout(resolve, ms));
@@ -73,6 +131,28 @@ function typingDuration(text: string, override?: number): number {
 
 function incomingTypingSource(msg: Message): string {
   return `${msg.text}${msg.image?.caption ?? ""}`;
+}
+
+// Split text on URLs and render each URL as a blue WhatsApp-style link.
+const URL_RE = /(https?:\/\/[^\s]+)/g;
+
+function renderTextWithLinks(text: string): ReactNode[] {
+  return text.split(URL_RE).map((part, i) =>
+    /^https?:\/\//.test(part) ? (
+      <a
+        key={i}
+        href={part}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="underline"
+        style={{ color: "#027EB5" }}
+      >
+        {part}
+      </a>
+    ) : (
+      <span key={i}>{part}</span>
+    ),
+  );
 }
 
 // ─── Doodle background (inline SVG data URI) ─────────────────────────────────
@@ -320,6 +400,21 @@ function ChatHeader({
   );
 }
 
+// ─── Date separator ───────────────────────────────────────────────────────────
+
+function DateSeparator({ label }: { label: string }) {
+  return (
+    <div
+      data-testid="date-separator"
+      className="flex justify-center px-2 py-2"
+    >
+      <span className="rounded-lg bg-white/95 px-3 py-1 text-[12px] font-medium text-[#54656F] shadow-[0_1px_0.5px_rgba(0,0,0,0.13)]">
+        {label}
+      </span>
+    </div>
+  );
+}
+
 // ─── Typing indicator ────────────────────────────────────────────────────────
 
 function TypingIndicator({ rtl }: { rtl: boolean }) {
@@ -456,7 +551,7 @@ function MessageBubble({
                   className="text-[16px] leading-[1.3] text-black break-words whitespace-pre-line mt-1"
                   dir={rtl ? "rtl" : "ltr"}
                 >
-                  {trimmedBodyText}
+                  {renderTextWithLinks(trimmedBodyText)}
                   <span className="inline-flex items-center gap-[2px] align-bottom whitespace-nowrap text-[11px] text-[#667781] ps-1">
                     {message.timestamp}
                     {isOut && <ReadReceipt status={message.status} />}
@@ -479,7 +574,7 @@ function MessageBubble({
               className="text-[16px] leading-[1.3] text-black break-words whitespace-pre-line"
               dir={rtl ? "rtl" : "ltr"}
             >
-              {message.text}
+              {renderTextWithLinks(message.text)}
               <span className="inline-flex items-center gap-[2px] align-bottom whitespace-nowrap text-[11px] text-[#667781] ps-1">
                 {message.timestamp}
                 {isOut && <ReadReceipt status={message.status} />}
@@ -596,9 +691,11 @@ export default function WhatsAppChat({
   showInputBar = true,
   autoplay = false,
   showControls = true,
+  playFromIndex = 0,
   syncStatusBarFromMessages = true,
   scale = 1,
   className,
+  chatBackground,
   onComplete,
 }: WhatsAppChatProps) {
   const rtl = direction === "rtl";
@@ -639,7 +736,16 @@ export default function WhatsAppChat({
     setIsPlaying(true);
     setDone(false);
 
-    for (const msg of messages) {
+    const startIndex = Math.max(0, Math.min(playFromIndex, messages.length));
+    if (startIndex > 0) {
+      // Show everything before the resume point instantly (no typing/delay).
+      const preIds = messages.slice(0, startIndex).map((m) => m.id);
+      setVisibleIds((prev) => new Set([...prev, ...preIds]));
+      setRevealedIds((prev) => new Set([...prev, ...preIds]));
+      scrollToBottom();
+    }
+
+    for (const msg of messages.slice(startIndex)) {
       if (cancelRef.current) break;
 
       await delay(msg.delayBeforeMs ?? 800);
@@ -674,7 +780,7 @@ export default function WhatsAppChat({
     setIsPlaying(false);
     setDone(true);
     if (!cancelRef.current) onComplete?.();
-  }, [isPlaying, messages, scrollToBottom, onComplete]);
+  }, [isPlaying, messages, playFromIndex, scrollToBottom, onComplete]);
 
   const reset = useCallback(() => {
     cancelRef.current = true;
@@ -776,21 +882,21 @@ export default function WhatsAppChat({
             ref={scrollRef}
             dir="ltr"
             className="flex-1 min-h-0 min-w-0 overflow-x-hidden overflow-y-auto py-2 scrollbar-hidden"
-            style={{
-              backgroundImage: DOODLE_URI,
-              backgroundSize: "200px 200px",
-              backgroundColor: "#EFE7DD",
-            }}
+            style={chatBackgroundStyle(chatBackground)}
           >
             {messages.map((msg) =>
               visibleIds.has(msg.id) ? (
-                <MessageBubble
-                  key={msg.id}
-                  message={msg}
-                  rtl={rtl}
-                  visible={revealedIds.has(msg.id)}
-                  showReaction={reactionIds.has(msg.id)}
-                />
+                <div key={msg.id}>
+                  {msg.daySeparator && (
+                    <DateSeparator label={msg.daySeparator} />
+                  )}
+                  <MessageBubble
+                    message={msg}
+                    rtl={rtl}
+                    visible={revealedIds.has(msg.id)}
+                    showReaction={reactionIds.has(msg.id)}
+                  />
+                </div>
               ) : null,
             )}
 

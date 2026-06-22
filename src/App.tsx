@@ -124,7 +124,17 @@ export default function App() {
           showStatusBar={data.showStatusBar}
           showInputBar={data.showInputBar}
           syncStatusBarFromMessages={data.syncStatusBarFromMessages}
+          intro={data.intro}
+          introDurationMs={data.introDurationMs}
+          captions={data.captions}
+          captionDurationMs={data.captionDurationMs}
           calendar={data.calendar}
+          reminder={data.reminder}
+          reminderDelayMs={data.reminderDelayMs}
+          staff={data.staff}
+          staffDelayMs={data.staffDelayMs}
+          outro={data.outro}
+          chatBackground={data.chatBackground}
         />
       </>
     );

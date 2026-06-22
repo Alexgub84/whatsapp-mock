@@ -27,9 +27,14 @@ Vite + React 18 + Tailwind v4. Published to **GitHub Packages**
 ## Conventions
 
 - **Add a recording = one file**: `public/scenarios/<id>/scenario.json` + a line
-  in `registry.json`. No component changes for a new scenario.
+  in `registry.json`. No component changes for a new scenario. Full authoring
+  recipe (chat → calendar → reminder → staff roster, day separators, blue links,
+  timing knobs) is in `docs/scenario-authoring.md`.
 - **Message copy: NO emojis.** Break any list (time slots, options, booking
   details) **one item per line** (`\n`); separate blocks with blank lines (`\n\n`).
+- **No em-dashes (`—`) in any user-facing copy** (messages, intro, captions,
+  titles) — they read as AI-written. Use a comma, colon, or period instead. Keep
+  the en-dash (`–`) for time ranges like `08:00–13:00`.
 - e2e is DOM-count based; serve via `vite preview` (not dev) with `reuseExistingServer: false`.
 - The chat→calendar flip back-face is always in the DOM (rotated away) — when
   testing/screenshotting the flip, wait for the actual flip transform, not just

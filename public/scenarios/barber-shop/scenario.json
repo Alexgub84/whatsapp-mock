@@ -6,10 +6,29 @@
     "profile_image": "profile_image.png"
   },
   "direction": "rtl",
+  "chatBackground": {
+    "image": "chat-bg.png",
+    "overlayColor": "#0b141a",
+    "overlayOpacity": 0.2
+  },
   "statusBarTime": "20:13",
   "syncStatusBarFromMessages": true,
   "showStatusBar": true,
   "showInputBar": true,
+  "introDurationMs": 5000,
+  "intro": {
+    "logoUrl": "/brand/handinhand-logo.png",
+    "brandName": "handinhand",
+    "tagline": "עסק שמתנהל חכם מרוויח יותר",
+    "subline": "סוכן AI שמנהל לכם את היומן, התורים והתשלומים, הכל בוואטסאפ"
+  },
+  "captionDurationMs": 2400,
+  "captions": {
+    "chat": "מענה ללקוח בוואטסאפ",
+    "calendar": "קביעת התור ושיבוץ ביומן",
+    "reminder": "תזכורת יום לפני התור",
+    "staff": "סידור עבודה לצוות"
+  },
   "messages": [
     {
       "id": "1",
@@ -80,11 +99,41 @@
     "dayEndHour": 21,
     "newBadge": "חדש",
     "events": [
-      { "time": "09:00", "durationMin": 30, "title": "תספורת", "subtitle": "יוסי ל.", "color": "blue" },
-      { "time": "10:00", "durationMin": 45, "title": "פייד", "subtitle": "דניאל ר.", "color": "purple" },
-      { "time": "11:30", "durationMin": 20, "title": "עיצוב זקן", "subtitle": "אבי מ.", "color": "orange" },
-      { "time": "13:00", "durationMin": 30, "title": "תספורת ילדים", "subtitle": "נועם ק.", "color": "teal" },
-      { "time": "16:30", "durationMin": 45, "title": "גילוח חם", "subtitle": "איתן ב.", "color": "pink" }
+      {
+        "time": "09:00",
+        "durationMin": 30,
+        "title": "תספורת",
+        "subtitle": "יוסי ל.",
+        "color": "blue"
+      },
+      {
+        "time": "10:00",
+        "durationMin": 45,
+        "title": "פייד",
+        "subtitle": "דניאל ר.",
+        "color": "purple"
+      },
+      {
+        "time": "11:30",
+        "durationMin": 20,
+        "title": "עיצוב זקן",
+        "subtitle": "אבי מ.",
+        "color": "orange"
+      },
+      {
+        "time": "13:00",
+        "durationMin": 30,
+        "title": "תספורת ילדים",
+        "subtitle": "נועם ק.",
+        "color": "teal"
+      },
+      {
+        "time": "16:30",
+        "durationMin": 45,
+        "title": "גילוח חם",
+        "subtitle": "איתן ב.",
+        "color": "pink"
+      }
     ],
     "newEvent": {
       "time": "14:30",
@@ -93,5 +142,66 @@
       "subtitle": "דוד כהן · 052-1234567",
       "color": "green"
     }
+  },
+  "reminderDelayMs": 3000,
+  "reminder": [
+    {
+      "id": "r1",
+      "sender": "outgoing",
+      "text": "בוקר טוב דוד, תזכורת לתור שלך מחר:\n\nיום רביעי, 14:30\nתספורת + עיצוב זקן\nהרצל 25, תל אביב (קומה 2)\n\nלתשלום מראש ולשמירת התור:\nhttps://pay.kings-barber.co.il/d4k2",
+      "timestamp": "08:00",
+      "status": "delivered",
+      "daySeparator": "היום",
+      "delayBeforeMs": 1100
+    }
+  ],
+  "staffDelayMs": 3000,
+  "outro": {
+    "logoUrl": "/brand/handinhand-logo.png",
+    "brandName": "handinhand",
+    "tagline": "דברו איתנו ליצירת העוזר החכם שלכם",
+    "subline": "עוזר חכם בוואטסאפ, מותאם לעסק שלכם"
+  },
+  "staff": {
+    "title": "סידור עבודה, מספרת קינגס",
+    "dayLabel": "יום רביעי, 18 ביוני",
+    "staggerMs": 750,
+    "shifts": [
+      {
+        "label": "בוקר",
+        "time": "08:00–13:00",
+        "station": "עמדה 1",
+        "assignee": "יוסי לוי",
+        "color": "blue"
+      },
+      {
+        "label": "בוקר",
+        "time": "09:00–14:00",
+        "station": "עמדה 2",
+        "assignee": "דניאל רז",
+        "color": "purple"
+      },
+      {
+        "label": "צהריים",
+        "time": "13:00–18:00",
+        "station": "עמדה 1",
+        "assignee": "אבי מזרחי",
+        "color": "orange"
+      },
+      {
+        "label": "ערב",
+        "time": "16:00–21:00",
+        "station": "עמדה 2",
+        "assignee": "איתן בר",
+        "color": "teal"
+      },
+      {
+        "label": "קבלה",
+        "time": "08:00–21:00",
+        "station": "דלפק",
+        "assignee": "נועה כהן",
+        "color": "pink"
+      }
+    ]
   }
 }

@@ -22,7 +22,8 @@
     "build:lib": "vite build --config vite.lib.config.ts",
     "preview": "vite preview",
     "test": "playwright test",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "record": "node scripts/record-scenario.mjs"
   },
   "peerDependencies": {
     "react": ">=18.0.0",
